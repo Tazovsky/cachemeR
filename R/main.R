@@ -59,7 +59,7 @@ casher <- R6Class(
       self$overwrite <- overwrite
       self$created_at <- created_at
       self$path <- path
-      private$shared$env <- env
+      # private$shared$env <- env
     },
     add = function() {
       if (is.null(self$count))
@@ -75,21 +75,23 @@ casher <- R6Class(
     }
   ),
   private = list(
-    shared = list(
-      env = NULL
-    )
+    shared = {
+      e <- new.env()
+      e$envir <- e
+      e
+    }
   ),
   active = list(
     # setEnv = function(e) {
     #   private$shared$env <- e
     # },
     getEnv = function() {
-      private$shared$env
+      private$shared$envir
     },
     share = function() function(nm, val) {
 
-      # if (nm  %in% names(env))
-      #   cat("Overwriting", nm, "variable.")
+      if (nm  %in% names(env))
+        cat("Overwriting", nm, "variable.")
 
       private$shared$env[[nm]] <- val
     },
@@ -102,9 +104,7 @@ casher <- R6Class(
 obj <- casher$new(path = "config.yaml", overwrite = TRUE)
 
 obj$getEnv
-obj$share(nm = "test", val = 1234)
-obj$getEnv
-obj$share( "test", 1233)
+obj$share(nm = "test", val = 123456)
 obj$getShared("test")
 
 
@@ -113,8 +113,11 @@ obj2 <- casher$new(path = "config.yaml", overwrite = TRUE)
 obj2$getShared("test")
 obj2$share(nm = "test", val = 4321)
 obj2$getShared("test")
+obj2$getEnv
+obj2$getShared("env")
 
 
+class(obj2$getEnv)
 
 casherEnv <- R6Class("casherEnv",
                      inherit = casher,
