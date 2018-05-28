@@ -3,4 +3,5 @@
 export("%c-%")
 export(getArgs)
 export(testFun)
+export(testFun2)
 importFrom(magrittr,"%>%")

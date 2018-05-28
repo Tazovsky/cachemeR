@@ -2,23 +2,23 @@
 % Please edit documentation in R/testFun.R
 \name{testFun}
 \alias{testFun}
+\alias{testFun2}
 \title{testFun}
 \usage{
-testFun(x = 1:20, b = 0, c = list(a = 2, b = 3))
+testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
+
+testFun2()
 }
 \arguments{
-\item{x}{vector}
-
 \item{b}{numeric}
 
 \item{c}{list}
+
+\item{x}{vector}
 }
 \value{
 numeric
 }
 \description{
 Test function
-}
-\examples{
-testFun()
 }

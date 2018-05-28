@@ -1,14 +1,3 @@
-library(dplyr)
-
-testFun <- function(a = 1:20,
-                    b = 0,
-                    c = list(d = 3, e = 5)) {
-  print(">> run")
-  x %>% sin %>% sum
-}
-
-testFun2 <- function() 1 + 3
-
 testthat::context("getArgs()")
 
 testthat::test_that("get default arguments", {
@@ -36,7 +25,7 @@ testthat::test_that("get custom arguments", {
     ))
 })
 
-test_that("get custom arguments: custom and default", {
+testthat::test_that("get mixed arguments: custom and default", {
   testthat::expect_equal(
     names(getArgs(testFun(
       a = 1:13,
