@@ -21,10 +21,15 @@ cacher <- R6Class(
 
         created_at <- Sys.time()
 
+        if (!dir.exists(dirname(path)))
+          dir.create(dirname(path))
+
         yaml::write_yaml(x = list(
           created_at = as.character(created_at),
           created_at_ts = as.character(as.integer(created_at))
         ), file = path)
+
+
         self$path <- path
         private$shared$path <- path
         self$overwrite <- overwrite
@@ -50,10 +55,13 @@ cacher <- R6Class(
     }
   ),
   private = list(
+    # great tips: https://elvinouyang.github.io/study%20notes/oop-with-r-s3-and-r6/ #nolint
     shared = {
       e <- new.env()
       e$envir <- e
       e$path <- NULL
+      e$cache <- NULL
+      e$last.cache <- NULL
       e
     }
   ),
@@ -65,13 +73,72 @@ cacher <- R6Class(
       private$shared$envir
     },
     share = function() function(nm, val) {
-      private$shared$env[[nm]] <- val
+      private$shared$envir[[nm]] <- val
     },
     getShared = function() function(nm) {
-      private$shared$env[[nm]]
+      private$shared$envir[[nm]]
+    },
+    lastCache = function() {
+      private$shared$last.cache
     }
   )
 )
 
+
+## ade method to cache
+cacher$set("public", "cacheme", function(fun.name, arguments, output = NULL) {
+  if (is.null(private$shared$cache))
+    private$shared$cache <- list()
+
+  if (any(sapply(list(fun.name, arguments, output), function(x) missing(x))))
+      stop("Provide all arguments: fun.name, arguments, output.")
+
+  stopifnot(inherits(output, "call"))
+
+  # browser()
+
+  obj2cache <- list(
+    arguments = arguments,
+    # pass output only when it is clear that
+    # current fun.name and args are cached
+    output = NULL,
+    hash = digest::digest(list(fun.name, arguments), algo = "md5"))
+
+  if (is.null(private$shared$cache[[obj2cache$hash]])) {
+    flog.info(sprintf("Caching '%s' for first time...", fun.name))
+
+    obj2cache$output <- eval(output)
+
+    private$shared$cache[[obj2cache$hash]] <- obj2cache
+
+    # update last cache
+    private$shared$last.cache <- obj2cache
+
+  } else if (!is.null(private$shared$cache[[obj2cache$hash]])) {
+    flog.info(sprintf("'%s' has been already cached...", fun.name))
+
+    # update last cache
+    private$shared$last.cache <- private$shared$cache[[obj2cache$hash]]
+
+  } else {
+    flog.info(sprintf("Caching '%s'...", fun.name))
+
+    # something has changed in arguments so need to retrieve outpu
+    obj2cache$output <- eval(output)
+
+    # cache
+    private$shared$cache[[obj2cache$hash]] <- obj2cache
+
+    # update last cache
+    private$shared$last.cache <- obj2cache
+  }
+
+})
+
+
+
 cacherRef <- R6Class("cacherEnv",
                      inherit = cacher)
+
+
+

@@ -15,8 +15,8 @@
 testFun <- function(a = 1:20,
                     b = 0,
                     c = list(d = 3, e = 5)) {
-  print(">> run")
-  x %>% sin %>% sum
+  print("Function have just been evaluated")
+  a %>% sin %>% sum
 }
 
 #' @rdname test-functions
