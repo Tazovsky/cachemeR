@@ -1,26 +1,4 @@
 
-`%c>%` <- function(lhs, rhs){
-  rhs <- substitute(rhs)
-
-  out <- pipe(lhs, rhs, env=parent.frame())
-
-  browser()
-
-  out
-}
-
-
-`%<-c%` <- function(x, value) {
-  target <- substitute(x)
-  expr <- substitute(value)
-  envir <- parent.frame(1)
-
-  browser()
-
-  ls(envir = envir)
-
-}
-
 
 library(R6)
 
@@ -87,10 +65,6 @@ cacher <- R6Class(
       private$shared$envir
     },
     share = function() function(nm, val) {
-
-      if (nm  %in% names(env))
-        cat(sprintf("Overwriting '%s' variable.\n", nm))
-
       private$shared$env[[nm]] <- val
     },
     getShared = function() function(nm) {
@@ -101,78 +75,3 @@ cacher <- R6Class(
 
 cacherRef <- R6Class("cacherEnv",
                      inherit = cacher)
-
-obj <- cacher$new(path = "config.yaml", overwrite = TRUE)
-
-
-
-
-# =============================================================
-
-obj$getEnv
-obj$share(nm = "test", val = 123456)
-obj$getShared("test")
-
-
-obj2 <- cacher$new(path = "config.yaml", overwrite = TRUE)
-
-obj2$getShared("test")
-obj2$share(nm = "test", val = 4321)
-obj2$getShared("test")
-obj$getShared("test")
-
-obj2$getEnv
-obj2$getShared("envir")
-
-e <- obj2$getEnv
-e$envir
-
-
-
-initCacheR <- function(path, overwrite = TRUE) {
-
-  if (missing(path))
-    stop("Provide 'path' argument.")
-
-  cacher.env <- new.env()
-
-  obj <- cacher$new(path = path, overwrite = overwrite)
-
-  assign("cacher", obj, envir = cacher.env)
-
-  options("cacher.env" = cacher.env)
-
-  TRUE
-}
-
-
-initCacheR("config.yaml")
-
-
-getCacheRobj <- function() {
-
-  env <- getOption("cacher.env")
-
-  if (is.null(env$cacher))
-    stop("'cacher' object not found")
-
-  env$cacher
-}
-
-setCacheRobj <- function(obj) {
-
-  if (!inherits(obj, "cacher"))
-    stop("Is not 'cacher' class")
-
-  env <- getOption("cacher.env")
-
-  assign("cacher", obj, envir = cacher.env)
-
-  TRUE
-}
-
-
-
-
-
-

@@ -1,10 +1,10 @@
 
 #' getArgs
 #'
-#' @param value
-#' @param eval.calls
+#' @param value function call
+#' @param eval.calls logical
 #'
-#' @return
+#' @return list
 #' @export
 #'
 #' @examples \dontrun{
