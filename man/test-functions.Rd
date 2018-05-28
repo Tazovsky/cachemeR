@@ -17,7 +17,9 @@ testLm(rows, cols)
 
 \item{c}{list}
 
-\item{cols}{}
+\item{rows}{integer}
+
+\item{cols}{integer}
 
 \item{x}{vector}
 }

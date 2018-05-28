@@ -41,6 +41,9 @@ getArgs <- function(value, eval.calls = TRUE) {
   if (length(common.args) > 0) {
     res <- c(res.custom.args[names(res.custom.args) %in% common.args],
              res.default.args[!names(res.default.args) %in% common.args])
+
+    # correct order of elements
+    res <- res[names(res.default.args)]
   } else {
     res <- res.default.args
   }
@@ -52,15 +55,17 @@ getArgs <- function(value, eval.calls = TRUE) {
 
     # may hapen when some arguments are evaluates with their name and some not
     # eg. res %c-% testLm(rows = 5000, 1000)
-    mergeNamedAndUnnamed <- function(res, qte.list) {
+    mergeNamedAndUnnamed <- function(res, qte.list, common.args) {
       for (i in 1:length(res)) {
-        if (res[i] == "" && names(qte.list[i]) == "")
+        if ((res[i] == "" && names(qte.list[i]) == "") ||
+            # when one common argument and still some unnamed
+            (!is.null(qte.list[i][[1]]) && names(qte.list[i]) == "" && !names(res[i]) %in% common.args))
           res[[i]] <- qte.list[[i]]
       }
       res
     }
 
-    res <- mergeNamedAndUnnamed(res, qte.list)
+    res <- mergeNamedAndUnnamed(res, qte.list, common.args)
   }
 
   if (eval.calls)

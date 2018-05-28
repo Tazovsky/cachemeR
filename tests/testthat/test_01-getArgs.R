@@ -48,3 +48,23 @@ testthat::test_that("function with no argument", {
   testthat::expect_equal(getArgs(testFun2()), list())
 })
 
+testthat::test_that("get mixed arguments: named and unnamed", {
+
+  testthat::expect_equal(
+    getArgs(testFun(
+      1:13,
+      b = 4,
+      list(d = 3, e = 3)
+    ), eval.calls = TRUE),
+    list(
+      a = 1:13,
+      b = 4,
+      c =list(d = 3, e = 3)
+    ))
+})
+
+
+
+
+
+

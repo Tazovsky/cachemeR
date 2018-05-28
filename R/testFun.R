@@ -28,8 +28,8 @@ testFun2 <- function() 1 + 3
 
 #' testLm
 #'
-#' @param rows
-#' @param cols
+#' @param rows integer
+#' @param cols integer
 #'
 #' @return model
 #' @export
