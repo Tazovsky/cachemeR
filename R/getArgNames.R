@@ -15,7 +15,10 @@
 #' }
 getArgs <- function(value, eval.calls = TRUE) {
 
-  qte <- quote(substitute(value))
+  if (inherits(value, "call"))
+    qte <- quote(value)
+  else
+    qte <- quote(substitute(value))
 
   qte <- eval(qte)
 
@@ -24,7 +27,10 @@ getArgs <- function(value, eval.calls = TRUE) {
   res.custom.args <- lapply(arg.nm, function(arg) qte[[arg]])
   names(res.custom.args) <- arg.nm
 
-  res.default.args <- formals(deparse(substitute(value)[[1]]))
+  if (inherits(value, "call"))
+    res.default.args <- formals(deparse(value[[1]]))
+  else
+    res.default.args <- formals(deparse(substitute(value)[[1]]))
 
   common.args <- intersect(names(res.custom.args), names(res.default.args))
 
