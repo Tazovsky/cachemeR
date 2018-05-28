@@ -86,12 +86,18 @@ cacher <- R6Class(
 
 
 ## ade method to cache
-cacher$set("public", "cacheme", function(fun.name, arguments, output = NULL) {
+cacher$set("public", "cacheme", function(fun.name,
+                                         fun.body,
+                                         arguments,
+                                         output = NULL,
+                                         algo = "md5") {
+
   if (is.null(private$shared$cache))
     private$shared$cache <- list()
 
-  if (any(sapply(list(fun.name, arguments, output), function(x) missing(x))))
-      stop("Provide all arguments: fun.name, arguments, output.")
+  if (any(sapply(list(fun.name, fun.body, arguments, output),
+                 function(x) missing(x))))
+      stop("Provide all arguments: fun.name, fun.body, arguments, output.")
 
   stopifnot(inherits(output, "call"))
 
@@ -102,7 +108,7 @@ cacher$set("public", "cacheme", function(fun.name, arguments, output = NULL) {
     # pass output only when it is clear that
     # current fun.name and args are cached
     output = NULL,
-    hash = digest::digest(list(fun.name, arguments), algo = "md5"))
+    hash = digest::digest(list(fun.name, fun.body, arguments), algo = algo))
 
   if (is.null(private$shared$cache[[obj2cache$hash]])) {
     flog.info(sprintf("Caching '%s' for first time...", fun.name))

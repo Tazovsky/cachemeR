@@ -12,12 +12,17 @@
   envir <- parent.frame(1)
   fun.name <- as.character(expr)[1]
 
-  if (!is.function(get(fun.name, envir = envir)))
+
+
+  fun <- get(fun.name, envir = envir)
+  if (!is.function(fun))
     stop("Supports functions caching only.")
 
-  value.args <- getArgs(expr)
+  browser()
+
+  value.args <- getArgs(value = expr, eval.calls = TRUE)
   obj <- cacherRef$new()
-  obj$cacheme(fun.name, value.args, expr)
+  obj$cacheme(fun.name, fun.body = functionBody(fun), value.args, expr)
 
   result <- obj$lastCache$output
 
@@ -31,12 +36,17 @@ if (FALSE) {
   res %c-% testFun(a = 1:13, b = 666, c = list(d = 3, e = 0))
 
   doLm <- function(rows, cols) {
-    set.seed(123)
+    set.seed(1234)
     X <- matrix(rnorm(rows*cols), rows, cols)
     b <- sample(1:cols, cols)
     y <- runif(1) + X %*% b + rnorm(rows)
     model <- lm(y ~ X)
   }
+
+  res.old %c-% doLm(rows = 5000, cols = 1000)
+  res.new %c-% doLm(rows = 5000, cols = 1000)
+
+  res.new %c-% doLm(rows = 5000, cols = 1000)
 
   bench <- microbenchmark::microbenchmark(
     res <- doLm(rows = 5000, cols = 1000),

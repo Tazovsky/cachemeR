@@ -34,11 +34,28 @@ getArgs <- function(value, eval.calls = TRUE) {
 
   common.args <- intersect(names(res.custom.args), names(res.default.args))
 
-  if (length(common.args) > 0)
+  if (length(common.args) > 0) {
     res <- c(res.custom.args[names(res.custom.args) %in% common.args],
              res.default.args[!names(res.default.args) %in% common.args])
-  else
+  } else {
     res <- res.default.args
+
+    ## TODO: handle case when function has unnamed arguments
+    # res <- if (class(res.default.args) == "pairlist") as.list(res.default.args) else res.default.args
+    #
+    # is.empty <- lapply(res.default.args, function(x) x == "")
+    #
+    # if (length(is.empty) > 0) {
+    #   not.empty.args <- res[!unlist(is.empty)]
+    #   empty.args <- res[unlist(is.empty)]
+    #
+    #   qte.list <- as.list(qte)
+    #
+    #   fun.arguments <- lapply(qte.list, eval)
+    #   fun.arguments[[1]] <- NULL # remove function
+    # }
+
+  }
 
   if (eval.calls)
     lapply(res, function(x) if (inherits(x, "call")) eval(x) else x)
