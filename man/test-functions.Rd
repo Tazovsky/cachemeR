@@ -3,22 +3,31 @@
 \name{testFun}
 \alias{testFun}
 \alias{testFun2}
+\alias{testLm}
 \title{testFun}
 \usage{
 testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
 
 testFun2()
+
+testLm(rows, cols)
 }
 \arguments{
 \item{b}{numeric}
 
 \item{c}{list}
 
+\item{cols}{}
+
 \item{x}{vector}
 }
 \value{
 numeric
+
+model
 }
 \description{
 Test function
+
+testLm
 }

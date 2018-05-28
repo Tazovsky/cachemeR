@@ -22,7 +22,11 @@ getArgs <- function(value, eval.calls = TRUE) {
 
   qte <- eval(qte)
 
-  arg.nm <- setdiff(names(qte), c("", "eval.calls"))
+  qte.list <- as.list(qte)
+  fun.name <- qte.list[[1]]
+  qte.list[[1]] <- NULL
+
+  arg.nm <- setdiff(names(qte.list), c("eval.calls"))
 
   res.custom.args <- lapply(arg.nm, function(arg) qte[[arg]])
   names(res.custom.args) <- arg.nm
@@ -39,22 +43,24 @@ getArgs <- function(value, eval.calls = TRUE) {
              res.default.args[!names(res.default.args) %in% common.args])
   } else {
     res <- res.default.args
+  }
 
-    ## TODO: handle case when function has unnamed arguments
-    # res <- if (class(res.default.args) == "pairlist") as.list(res.default.args) else res.default.args
-    #
-    # is.empty <- lapply(res.default.args, function(x) x == "")
-    #
-    # if (length(is.empty) > 0) {
-    #   not.empty.args <- res[!unlist(is.empty)]
-    #   empty.args <- res[unlist(is.empty)]
-    #
-    #   qte.list <- as.list(qte)
-    #
-    #   fun.arguments <- lapply(qte.list, eval)
-    #   fun.arguments[[1]] <- NULL # remove function
-    # }
+  if (!is.null(res) &&
+      length(res) > 0 &&
+      !is.null(qte.list) &&
+      length(qte.list) > 0) {
 
+    # may hapen when some arguments are evaluates with their name and some not
+    # eg. res %c-% testLm(rows = 5000, 1000)
+    mergeNamedAndUnnamed <- function(res, qte.list) {
+      for (i in 1:length(res)) {
+        if (res[i] == "" && names(qte.list[i]) == "")
+          res[[i]] <- qte.list[[i]]
+      }
+      res
+    }
+
+    res <- mergeNamedAndUnnamed(res, qte.list)
   }
 
   if (eval.calls)

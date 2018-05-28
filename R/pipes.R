@@ -30,6 +30,7 @@ if (FALSE) {
   # debugonce(`%c-%`)
   # cacheR::`%c-%`()
   res %c-% testFun(a = 1:13, b = 666, c = list(d = 3, e = 0))
+  res %c-% testFun()
 
   doLm <- function(rows, cols) {
     set.seed(1234)
@@ -42,7 +43,7 @@ if (FALSE) {
   res.old %c-% doLm(rows = 5000, cols = 1000)
   res.new %c-% doLm(rows = 5000, cols = 1000)
 
-  res.new %c-% doLm(rows = 5000, cols = 1000)
+  res.new %c-% doLm(rows = 5000, 1000)
 
   bench <- microbenchmark::microbenchmark(
     res <- doLm(rows = 5000, cols = 1000),

@@ -121,7 +121,7 @@ cacher$set("public", "cacheme", function(fun.name,
     private$shared$last.cache <- obj2cache
 
   } else if (!is.null(private$shared$cache[[obj2cache$hash]])) {
-    flog.info(sprintf("'%s' has been already cached...", fun.name))
+    flog.info(sprintf("'%s' is already cached...", fun.name))
 
     # update last cache
     private$shared$last.cache <- private$shared$cache[[obj2cache$hash]]
