@@ -7,9 +7,11 @@ testFun <- function(a = 1:20,
   x %>% sin %>% sum
 }
 
+testFun2 <- function() 1 + 3
+
 testthat::context("getArgs()")
 
-test_that("get default arguments", {
+testthat::test_that("get default arguments", {
 
   testthat::expect_equal(getArgs(testFun(), eval.calls = TRUE),
                          list(
@@ -19,7 +21,7 @@ test_that("get default arguments", {
                          ))
 })
 
-test_that("get custom arguments", {
+testthat::test_that("get custom arguments", {
   testthat::expect_equal(
     getArgs(testFun(
       a = 1:10,
@@ -33,3 +35,30 @@ test_that("get custom arguments", {
       c = list(d = 21, e = 12)
     ))
 })
+
+test_that("get custom arguments: custom and default", {
+  testthat::expect_equal(
+    names(getArgs(testFun(
+      a = 1:13,
+      b = 4,
+      eval.calls = TRUE
+    ))),
+    c("a", "b", "c"))
+
+  testthat::expect_equal(
+    getArgs(testFun(
+      a = 1:13,
+      b = 4,
+      eval.calls = TRUE
+    )),
+    list(
+      a = 1:13,
+      b = 4,
+      c = list(d = 3, e = 5)
+    ))
+})
+
+testthat::test_that("function with no argument", {
+  testthat::expect_equal(getArgs(testFun2()), list())
+})
+
