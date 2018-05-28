@@ -22,44 +22,41 @@
 }
 
 
-spr %<-c% testFun()
-
-install.packages("listenv")
-
-listenv::listenv()
-listenv::get_variable()
-
-yaml::write_yaml(list(path = path))
-
-
 library(R6)
 
-casher <- R6Class(
-  "casher",
+cacher <- R6Class(
+  "cacher",
   public = list(
     path = NULL,
     created_at = NULL,
     overwrite = NULL,
     count = NULL,
-    initialize = function(path = NA, overwrite = FALSE, env = new.env()) {
+    initialize = function(path = "config.yaml", overwrite = TRUE, env = new.env()) {
 
-      if (!grepl(".*\\.yaml$|.*\\.yml$", path))
-        stop("File has no 'yml' or 'yaml' extension.")
+      if (is.null(private$shared$path)) {
 
-      if (overwrite == FALSE && file.exists(path))
-        stop("File already exists. Please set 'overwrite' parameter to overwrite.")
+        if (!grepl(".*\\.yaml$|.*\\.yml$", path))
+          stop("File has no 'yml' or 'yaml' extension.")
 
-      created_at <- Sys.time()
+        if (overwrite == FALSE && file.exists(path))
+          stop("File already exists. Please set 'overwrite' parameter to overwrite.")
 
-      yaml::write_yaml(x = list(
-        created_at = as.character(created_at),
-        created_at_ts = as.character(as.integer(created_at))
-      ), file = path)
+        created_at <- Sys.time()
 
-      self$overwrite <- overwrite
-      self$created_at <- created_at
-      self$path <- path
-      # private$shared$env <- env
+        yaml::write_yaml(x = list(
+          created_at = as.character(created_at),
+          created_at_ts = as.character(as.integer(created_at))
+        ), file = path)
+        self$path <- path
+        private$shared$path <- path
+        self$overwrite <- overwrite
+        self$created_at <- created_at
+      } else {
+        self$path <- private$shared$path
+        yml <- yaml::read_yaml(self$path)
+        self$overwrite <- yml$created_at
+      }
+
     },
     add = function() {
       if (is.null(self$count))
@@ -78,6 +75,7 @@ casher <- R6Class(
     shared = {
       e <- new.env()
       e$envir <- e
+      e$path <- NULL
       e
     }
   ),
@@ -91,7 +89,7 @@ casher <- R6Class(
     share = function() function(nm, val) {
 
       if (nm  %in% names(env))
-        cat("Overwriting", nm, "variable.")
+        cat(sprintf("Overwriting '%s' variable.\n", nm))
 
       private$shared$env[[nm]] <- val
     },
@@ -101,50 +99,34 @@ casher <- R6Class(
   )
 )
 
-obj <- casher$new(path = "config.yaml", overwrite = TRUE)
+cacherRef <- R6Class("cacherEnv",
+                     inherit = cacher)
+
+obj <- cacher$new(path = "config.yaml", overwrite = TRUE)
+
+
+
+
+# =============================================================
 
 obj$getEnv
 obj$share(nm = "test", val = 123456)
 obj$getShared("test")
 
 
-obj2 <- casher$new(path = "config.yaml", overwrite = TRUE)
+obj2 <- cacher$new(path = "config.yaml", overwrite = TRUE)
 
 obj2$getShared("test")
 obj2$share(nm = "test", val = 4321)
 obj2$getShared("test")
+obj$getShared("test")
+
 obj2$getEnv
-obj2$getShared("env")
+obj2$getShared("envir")
 
+e <- obj2$getEnv
+e$envir
 
-class(obj2$getEnv)
-
-casherEnv <- R6Class("casherEnv",
-                     inherit = casher,
-                     public = list(
-                       summary = function(...) {
-                         self$summary()
-                       }
-                     )
-)
-
-x <- casherEnv$new("config.yaml", overwrite = TRUE)
-x$add()
-x$path()
-x$count
-
-class(x)
-
-
-
-casherEnv$summary()
-
-
-
-obj1 <- casher$new("config.yaml", overwrite = TRUE)
-
-obj1$summary()
-obj1$add()
 
 
 initCacheR <- function(path, overwrite = TRUE) {
@@ -154,9 +136,9 @@ initCacheR <- function(path, overwrite = TRUE) {
 
   cacher.env <- new.env()
 
-  obj <- casher$new(path = path, overwrite = overwrite)
+  obj <- cacher$new(path = path, overwrite = overwrite)
 
-  assign("casher", obj, envir = cacher.env)
+  assign("cacher", obj, envir = cacher.env)
 
   options("cacher.env" = cacher.env)
 
@@ -171,20 +153,20 @@ getCacheRobj <- function() {
 
   env <- getOption("cacher.env")
 
-  if (is.null(env$casher))
-    stop("'casher' object not found")
+  if (is.null(env$cacher))
+    stop("'cacher' object not found")
 
-  env$casher
+  env$cacher
 }
 
 setCacheRobj <- function(obj) {
 
-  if (!inherits(obj, "casher"))
-    stop("Is not 'casher' class")
+  if (!inherits(obj, "cacher"))
+    stop("Is not 'cacher' class")
 
   env <- getOption("cacher.env")
 
-  assign("casher", obj, envir = cacher.env)
+  assign("cacher", obj, envir = cacher.env)
 
   TRUE
 }
