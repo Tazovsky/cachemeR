@@ -12,13 +12,9 @@
   envir <- parent.frame(1)
   fun.name <- as.character(expr)[1]
 
-
-
   fun <- get(fun.name, envir = envir)
   if (!is.function(fun))
     stop("Supports functions caching only.")
-
-  browser()
 
   value.args <- getArgs(value = expr, eval.calls = TRUE)
   obj <- cacherRef$new()
