@@ -30,5 +30,20 @@ if (FALSE) {
   # cacheR::`%c-%`()
   res %c-% testFun(a = 1:13, b = 666, c = list(d = 3, e = 0))
 
+  doLm <- function(rows, cols) {
+    set.seed(123)
+    X <- matrix(rnorm(rows*cols), rows, cols)
+    b <- sample(1:cols, cols)
+    y <- runif(1) + X %*% b + rnorm(rows)
+    model <- lm(y ~ X)
+  }
 
+  bench <- microbenchmark::microbenchmark(
+    res <- doLm(rows = 5000, cols = 1000),
+    res.cached %c-% doLm(rows = 5000, cols = 1000),
+    times = 30L
+  )
+
+
+  testthat::expect_equal(res, res.cached)
 }
