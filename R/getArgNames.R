@@ -55,17 +55,33 @@ getArgs <- function(value, eval.calls = TRUE) {
 
     # may hapen when some arguments are evaluates with their name and some not
     # eg. res %c-% testLm(rows = 5000, 1000)
+
+
+
     mergeNamedAndUnnamed <- function(res, qte.list, common.args) {
       for (i in 1:length(res)) {
-        if ((res[i] == "" && names(qte.list[i]) == "") ||
+
+        if ((!is.null(res[i]) && res[i] == "" && !is.null(qte.list[i]) && names(qte.list[i]) == "") ||
             # when one common argument and still some unnamed
-            (!is.null(qte.list[i][[1]]) && names(qte.list[i]) == "" && !names(res[i]) %in% common.args))
+            (
+              !is.null(qte.list[i][[1]]) &&
+              !is.null(qte.list[i]) &&
+              !is.null(names(qte.list[i])) && names(qte.list[i]) == "" && !names(res[i]) %in% common.args
+            )
+        )
           res[[i]] <- qte.list[[i]]
       }
       res
     }
 
-    res <- mergeNamedAndUnnamed(res, qte.list, common.args)
+    # if all namees of qte.list are NULL then all argument were provided without naming them
+    # and point is just to get names from function's default arguments
+    if (is.null(names(qte.list)) && !is.null(names(res))) {
+      names(qte.list) <- names(res)
+      res <- qte.list
+    } else {
+      res <- mergeNamedAndUnnamed(res, qte.list, common.args)
+    }
   }
 
   if (eval.calls)
