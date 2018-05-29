@@ -26,7 +26,7 @@ testFun <- function(a = 1:20,
 testFun2 <- function() 1 + 3
 
 
-#' testLm
+#' doLm
 #'
 #' @param rows integer
 #' @param cols integer
@@ -35,7 +35,7 @@ testFun2 <- function() 1 + 3
 #' @export
 #'
 #' @rdname test-functions
-testLm <- function(rows, cols) {
+doLm <- function(rows, cols) {
   set.seed(1234)
   X <- matrix(rnorm(rows*cols), rows, cols)
   b <- sample(1:cols, cols)

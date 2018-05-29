@@ -17,28 +17,18 @@
     stop("Supports functions caching only.")
 
   value.args <- getArgs(value = expr, eval.calls = TRUE)
-  obj <- cacherRef$new()
-  obj$cacheme(fun.name, fun.body = functionBody(fun), value.args, expr)
+  cache <- cachemerRef$new()
+  cache$cacheme(fun.name, fun.body = functionBody(fun), value.args, expr)
 
-  result <- obj$lastCache$output
+  result <- cache$lastCache$output
 
   assign(deparse(target), result, envir = envir)
 }
 
 
 if (FALSE) {
-  # debugonce(`%c-%`)
-  # cacheR::`%c-%`()
   res %c-% testFun(a = 1:13, b = 666, c = list(d = 3, e = 0))
   res %c-% testFun()
-
-  doLm <- function(rows, cols) {
-    set.seed(1234)
-    X <- matrix(rnorm(rows*cols), rows, cols)
-    b <- sample(1:cols, cols)
-    y <- runif(1) + X %*% b + rnorm(rows)
-    model <- lm(y ~ X)
-  }
 
   res.old %c-% doLm(rows = 5000, cols = 1000)
   res.new %c-% doLm(rows = 5000, cols = 1000)

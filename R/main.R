@@ -1,8 +1,24 @@
-
-
-library(R6)
-
-cacher <- R6Class(
+#' @title cachemer
+#' @description TODO
+#'
+#' @importFrom R6 R6Class
+#' @importFrom yaml read_yaml write_yaml
+#' @export
+#' @keywords data
+#' @return Object of \code{\link{R6Class}} with methods for caching objects
+#' @format \code{\link{R6Class}} object.
+#' @examples \dontrun{
+#'
+#' }
+#'
+#' @field new(path="config.yaml",overwrite=TRUE,env=new.env()) Initializes \code{\link{R6Class}} object
+#' @field summary Prints summary of \code{\link{R6Class}} object
+#' @field getEnv Gets environment shared between multiple `cachemer` objects
+#' @field share(nm,val) Shares object between multiple `cachemer` objects
+#' @field getShared(nm) Gets shared object
+#' @field cacheme(fun.name,fun.body,arguments,output=NULL,algo="md5") Caches object/function
+#' @field lastCache Gets last object added to cache
+cachemer <- R6::R6Class(
   "cacher",
   public = list(
     path = NULL,
@@ -66,9 +82,6 @@ cacher <- R6Class(
     }
   ),
   active = list(
-    # setEnv = function(e) {
-    #   private$shared$env <- e
-    # },
     getEnv = function() {
       private$shared$envir
     },
@@ -85,8 +98,7 @@ cacher <- R6Class(
 )
 
 
-## ade method to cache
-cacher$set("public", "cacheme", function(fun.name,
+cachemer$set("public", "cacheme", function(fun.name,
                                          fun.body,
                                          arguments,
                                          output = NULL,
@@ -100,8 +112,6 @@ cacher$set("public", "cacheme", function(fun.name,
       stop("Provide all arguments: fun.name, fun.body, arguments, output.")
 
   stopifnot(inherits(output, "call"))
-
-  # browser()
 
   obj2cache <- list(
     arguments = arguments,
@@ -142,9 +152,16 @@ cacher$set("public", "cacheme", function(fun.name,
 })
 
 
-
-cacherRef <- R6Class("cacherEnv",
-                     inherit = cacher)
+#' @title ref
+#' @description Inherits from \link[cachemeR]{cacher}
+#'
+#' @importFrom R6 R6Class
+#' @export
+#' @keywords data
+#' @return Object of \code{\link{R6Class}} with methods for caching objects
+#' @format \code{\link{R6Class}} object.
+cachemerRef <- R6Class("cachemerRef",
+               inherit = cachemer)
 
 
 
