@@ -17,7 +17,8 @@ testFun <- function(a = 1:20,
                     c = list(d = 3, e = 5)) {
   flog.debug("Function have just been evaluated")
   res <- a %>% sin %>% sum
-  res <- (res + 2)^2/5
+  res <- (res + 2)^c$d/c$e
+  res
 }
 
 #' @rdname test-functions
