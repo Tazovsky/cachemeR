@@ -17,7 +17,7 @@ TODO
 \section{Fields}{
 
 \describe{
-\item{\code{new(path="config.yaml",overwrite=TRUE,env=new.env())}}{Initializes \code{\link{R6Class}} object}
+\item{\code{new(path,overwrite=TRUE)}}{Initializes \code{\link{R6Class}} object}
 
 \item{\code{summary}}{Prints summary of \code{\link{R6Class}} object}
 

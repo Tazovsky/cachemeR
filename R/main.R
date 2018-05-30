@@ -11,7 +11,7 @@
 #'
 #' }
 #'
-#' @field new(path="config.yaml",overwrite=TRUE,env=new.env()) Initializes \code{\link{R6Class}} object
+#' @field new(path,overwrite=TRUE) Initializes \code{\link{R6Class}} object
 #' @field summary Prints summary of \code{\link{R6Class}} object
 #' @field getEnv Gets environment shared between multiple `cachemer` objects
 #' @field share(nm,val) Shares object between multiple `cachemer` objects
@@ -25,9 +25,9 @@ cachemer <- R6::R6Class(
     created_at = NULL,
     overwrite = NULL,
     count = NULL,
-    initialize = function(path = "config.yaml", overwrite = TRUE, env = new.env()) {
+    initialize = function(path, overwrite = TRUE) {
 
-      if (is.null(private$shared$path)) {
+      if (!missing(path) && !is.null(path)) {
 
         if (!grepl(".*\\.yaml$|.*\\.yml$", path))
           stop("File has no 'yml' or 'yaml' extension.")
@@ -50,10 +50,12 @@ cachemer <- R6::R6Class(
         private$shared$path <- path
         self$overwrite <- overwrite
         self$created_at <- created_at
-      } else {
+      } else if (!is.null(private$shared$path)) {
         self$path <- private$shared$path
         yml <- yaml::read_yaml(self$path)
         self$overwrite <- yml$created_at
+      } else {
+        stop("Missing 'path' argument")
       }
 
     },
@@ -68,6 +70,17 @@ cachemer <- R6::R6Class(
       cat("path:", self$path, "\n")
       cat("created at:", as.character(self$created_at), "\n")
       cat("count:", self$count, "\n")
+    },
+    reset = function() {
+      self$path <- NULL
+      self$overwrite <- NULL
+      self$created_at <- NULL
+      self$count <- NULL
+
+
+      private$shared$path <- NULL
+      private$shared$cache <- NULL
+      private$shared$last.cache <- NULL
     }
   ),
   private = list(
