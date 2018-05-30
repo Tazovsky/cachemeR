@@ -117,6 +117,8 @@ cachemer$set("public", "cacheme", function(fun.name,
                                          output = NULL,
                                          algo = "md5") {
 
+  set.seed(123)
+
   if (is.null(private$shared$cache))
     private$shared$cache <- list()
 
@@ -126,12 +128,27 @@ cachemer$set("public", "cacheme", function(fun.name,
 
   stopifnot(inherits(output, "call"))
 
+
+  # remove attribs to reproduct hash
+  attributes(fun.body) <- NULL
+
+  hashes <- list(
+    fun.name = digest::digest(fun.name, algo),
+    fun.body = digest::digest(fun.body, algo),
+    arguments = digest::digest(arguments, algo)
+  )
+
   obj2cache <- list(
     arguments = arguments,
+    hashes = hashes,
     # pass output only when it is clear that
     # current fun.name and args are cached
     output = NULL,
-    hash = digest::digest(list(fun.name, fun.body, arguments), algo = algo))
+    hash = digest::digest(
+      list(hashes$fun.name, hashes$fun.body, hashes$arguments),
+      algo = algo
+    )
+  )
 
   if (is.null(private$shared$cache[[obj2cache$hash]])) {
     flog.info(sprintf("Caching '%s' for first time...", fun.name))

@@ -55,6 +55,16 @@ testthat::test_that("method: lastCache", {
   testthat::expect_equal(ref.res, cache$lastCache$output)
   testthat::expect_equal(list(a = 1:100, b = 1, c =list(d = 2, e = 3)),
                          cache$lastCache$arguments)
-  testthat::expect_equal("5cb5a1cb70981907b91d2de4b127b762",
+
+  testthat::expect_equal("6909e86c41e10a11431fb13433767de4",
+                         cache$lastCache$hashes$fun.name)
+
+  testthat::expect_equal("c3783d8b264c9c5addfb001af37976f8",
+                         cache$lastCache$hashes$fun.body)
+
+  testthat::expect_equal("f5de5e744f53b90b28a3a3cce3e23114",
+                         cache$lastCache$hashes$arguments)
+
+  testthat::expect_equal("6446ef4dc350c0f6418be1b91f6b2d9f",
                          cache$lastCache$hash)
 })
