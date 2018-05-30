@@ -13,6 +13,7 @@ Depends:
   futile.logger
 Imports:
   magrittr,
-  digest
+  digest,
+  yaml
 Suggests: testthat
 RoxygenNote: 6.0.1
