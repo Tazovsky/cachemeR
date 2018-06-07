@@ -63,7 +63,11 @@ testthat::test_that("get mixed arguments: named and unnamed", {
     ))
 })
 
+testthat::test_that("argument value is named variable", {
 
+  
+
+})
 
 
 

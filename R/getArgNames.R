@@ -15,6 +15,8 @@
 #' }
 getArgs <- function(value, eval.calls = TRUE) {
 
+  p.env <- parent.frame()
+
   if (inherits(value, "call"))
     qte <- quote(value)
   else
@@ -23,8 +25,18 @@ getArgs <- function(value, eval.calls = TRUE) {
   qte <- eval(qte)
 
   qte.list <- as.list(qte)
+
   fun.name <- qte.list[[1]]
   qte.list[[1]] <- NULL
+  
+  
+  # check if argument values are named variables
+  qte.list <- lapply(qte.list, function(x) {
+    if (class(x) == "name")
+      eval(x)
+    else
+      x
+  })
 
   arg.nm <- setdiff(names(qte.list), c("eval.calls"))
 
