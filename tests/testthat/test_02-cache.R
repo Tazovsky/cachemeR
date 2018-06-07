@@ -68,3 +68,33 @@ testthat::test_that("method: lastCache", {
   testthat::expect_equal("6446ef4dc350c0f6418be1b91f6b2d9f",
                          cache$lastCache$hash)
 })
+
+
+testthat::test_that("argument value is named variable", {
+  
+  x <- 1:123
+  y <- 13
+  z <- list(d = 11, e = 22)
+  
+  debugonce(getArgs)
+  
+  ref.res <- testFun(a = x, 1, z)
+  res %c-% testFun(a = x, 1, z)
+  
+  testthat::expect_equal(ref.res, res)
+  
+  ref.res <- testFun(a = x, 7, z)
+  res %c-% testFun(a = x, 7, z)
+  
+  testthat::expect_equal(ref.res, res)
+  
+  x <- 1:123
+  y <- 13
+  z <- list(x = list(d = 11, e = 22))
+  
+  ref.res <- testFun(a = x, 3, z$x)
+  res %c-% testFun(a = x, 3, z$x)
+  
+  testthat::expect_equal(ref.res, res)
+})
+
