@@ -97,4 +97,19 @@ testthat::test_that("argument value is named LIST variable", {
   res %c-% testFun(a = x, 3, z$x)
   
   testthat::expect_equal(ref.res, res)
+  
+  # change value in list to be sure it will react to this change
+  z <- list(x = list(d = 3, e = 2))
+  ref.res <- testFun(a = x, 3, z$x)
+  res %c-% testFun(a = x, 3, z$x)
+  testthat::expect_equal(ref.res, res)
+  
+  x <- 1:12
+  y <- list(value = list(finally = 4))
+  z <- list(x = list(d = 11, e = 22))
+  
+  ref.res <- testFun(a = x, y$value$finally, z$x)
+  res %c-% testFun(a = x, y$value$finally, z$x)
+  testthat::expect_equal(ref.res, res)
+  
 })
