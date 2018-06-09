@@ -78,14 +78,17 @@ testthat::test_that("argument value is named variable", {
 
   ref.res <- testFun(a = x, 1, z)
   res %c-% testFun(a = x, 1, z)
-  
+
   testthat::expect_equal(ref.res, res)
-  
+
   ref.res <- testFun(a = x, 7, z)
   res %c-% testFun(a = x, 7, z)
-  
+
   testthat::expect_equal(ref.res, res)
   
+})
+
+testthat::test_that("argument value is named LIST variable", {
   x <- 1:123
   y <- 13
   z <- list(x = list(d = 11, e = 22))
@@ -95,4 +98,3 @@ testthat::test_that("argument value is named variable", {
   
   testthat::expect_equal(ref.res, res)
 })
-

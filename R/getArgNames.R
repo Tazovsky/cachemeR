@@ -16,7 +16,7 @@
 getArgs <- function(value, eval.calls = TRUE) {
 
   p.env <- parent.frame(1) # parent envir
-  gp.env <- parent.frame(2) # granparent envir
+  gp.env <- parent.frame(2) # grandparent envir
   
   if (inherits(value, "call"))
     qte <- quote(value)
@@ -32,10 +32,11 @@ getArgs <- function(value, eval.calls = TRUE) {
   
   # check if argument values are named variables
   qte.list <- lapply(qte.list, function(x) {
-    if (class(x) == "name")
+    if (class(x) == "name") {
       eval(x, envir = gp.env)
-    else
+    } else {
       x
+    }
   })
 
   arg.nm <- setdiff(names(qte.list), c("eval.calls"))
@@ -112,7 +113,17 @@ getArgs <- function(value, eval.calls = TRUE) {
   }
   
   if (eval.calls)
-    res <- lapply(res, function(x) if (inherits(x, "call")) eval(x) else x)
+    res <- lapply(res, function(x) {
+      if (inherits(x, "call")) {
+        if (isListArg(x, envir = gp.env)) {
+          getListArg(x, envir = gp.env)
+        } else {
+          eval(x)
+        }
+      } else {
+        x
+      }
+    })
   
   # all argument must be evaluated and be values
   is.non.evaluated <- sapply(res, class) %in% c("name", "call")

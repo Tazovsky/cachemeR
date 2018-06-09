@@ -14,13 +14,13 @@ isListArg <- function(x, envir) {
   
   sb <- if (!class(x) == "call") substitute(x, env = p.envir) else x
   
-  if (sb[[1]] == "$") {
+  if (as.character(sb)[[1]] == "$") {
     ## because dollar is first:
     # Browse[4]> sb
     # z$x
     # Browse[4]> as.character(sb)
     # [1] "$" "z" "x"
-    is.list(get(as.character(sb[[2]]), envir = envir))
+    is.list(get(as.character(sb)[[2]], envir = envir))
   } else {
     FALSE
   }
@@ -49,4 +49,55 @@ parseList <- function(x, envir) {
   parsed <- as.character(deparse(sb))
   
   unlist(strsplit(parsed, "\\$"))
+}
+
+#' getListArg
+#'
+#' @param x 
+#' @param envir environment
+#'
+#' @return list/value
+#' @export
+#'
+getListArg <- function(x, envir) {
+  
+  stopifnot(isListArg(x, envir = envir))
+  
+  # parse list to get path to element to be assigned to
+  list.parsed <- parseList(x, envir)
+  
+  # get whole list object
+  lhs.obj.nm <- "lhs.obj"
+  target.nm <- list.parsed[1]
+  assign(lhs.obj.nm, get(target.nm, envir = envir))
+  
+  # create expresion to assign value automatically
+  expr <- paste0(lhs.obj.nm, paste0("[['", list.parsed[-1], "']]", collapse = ""))
+  
+  res <- eval(parse(text = expr)) # get value of list
+  
+  return(res)
+}
+
+#' evalOutput
+#' 
+#' Evaluate `call` expression even when some elements are listss
+#' 
+#' @param output 
+#' @param envir environment
+#'
+#' @return value of `call` expression
+#' @export
+#'
+evalOutput <- function(output, envir = parent.frame()) {
+  stopifnot(class(output) == "call")
+  
+  # if any argument is list, then get its value before evaluating function
+  for (i in 2:length(output)) {
+    if (isListArg(output[[i]], envir = envir)) {
+      output[[i]] <- getListArg(output[[i]], envir = envir)
+    }
+  }
+  
+  eval(output, envir = envir)
 }

@@ -153,8 +153,8 @@ cachemer$set("public", "cacheme", function(fun.name,
   if (is.null(private$shared$cache[[obj2cache$hash]])) {
     flog.info(sprintf("Caching '%s' for first time...", fun.name))
 
-    obj2cache$output <- eval(output)
-
+    obj2cache$output <- evalOutput(output, envir = parent.frame(2))
+    
     private$shared$cache[[obj2cache$hash]] <- obj2cache
 
     # update last cache
