@@ -113,3 +113,20 @@ testthat::test_that("argument value is named LIST variable", {
   testthat::expect_equal(ref.res, res)
   
 })
+
+testthat::test_that("argument value is named NESTED LIST variable", {
+  
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  
+      config.file <- file.path(tmp.dir, "config.yaml")
+      cache <- cachemer$new(path = config.file)
+      TRUE
+  x <- 1:12
+  y <- list(value = list(finally = 4))
+  z <- list(x = list(d = 11, e = 22))
+  
+  ref.res <- testFun(a = x, y$value$finally, z$x)
+  res %c-% testFun(a = x, y$value$finally, z$x)
+  testthat::expect_equal(ref.res, res)
+})

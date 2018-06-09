@@ -115,6 +115,7 @@ getArgs <- function(value, eval.calls = TRUE) {
   if (eval.calls)
     res <- lapply(res, function(x) {
       if (inherits(x, "call")) {
+        
         if (isListArg(x, envir = gp.env)) {
           getListArg(x, envir = gp.env)
         } else {

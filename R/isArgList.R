@@ -14,13 +14,19 @@ isListArg <- function(x, envir) {
   
   sb <- if (!class(x) == "call") substitute(x, env = p.envir) else x
   
-  if (as.character(sb)[[1]] == "$") {
+  # handle case when x is nested list, for example: x$y$z
+  sb.char <- as.character(sb)
+  
+  sb.char.unl <- 
+    unlist(sapply(sb.char, function(x) if (x == "$") x else strsplit(x, "\\$")))
+  
+  if (sb.char.unl[[1]] == "$") {
     ## because dollar is first:
     # Browse[4]> sb
     # z$x
     # Browse[4]> as.character(sb)
     # [1] "$" "z" "x"
-    is.list(get(as.character(sb)[[2]], envir = envir))
+    is.list(get(sb.char.unl[[2]], envir = envir))
   } else {
     FALSE
   }
