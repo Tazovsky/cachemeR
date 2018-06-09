@@ -62,13 +62,3 @@ testthat::test_that("get mixed arguments: named and unnamed", {
       c =list(d = 3, e = 3)
     ))
 })
-
-testthat::test_that("argument value is named variable", {
-
-  
-
-})
-
-
-
-

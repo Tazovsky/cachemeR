@@ -75,9 +75,7 @@ testthat::test_that("argument value is named variable", {
   x <- 1:123
   y <- 13
   z <- list(d = 11, e = 22)
-  
-  debugonce(getArgs)
-  
+
   ref.res <- testFun(a = x, 1, z)
   res %c-% testFun(a = x, 1, z)
   
