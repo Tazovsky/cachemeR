@@ -130,3 +130,12 @@ testthat::test_that("argument value is named NESTED LIST variable", {
   res %c-% testFun(a = x, y$value$finally, z$x)
   testthat::expect_equal(ref.res, res)
 })
+
+
+testthat::test_that("dolar '$' support for data frames", {
+  df <- iris
+  df$Sepal.Length2 <- df$Sepal.Length + 1
+  df$Sepal.Length2 %c-% df$Sepal.Length + 1
+  
+})
+
