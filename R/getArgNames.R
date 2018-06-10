@@ -15,8 +15,9 @@
 #' }
 getArgs <- function(value, eval.calls = TRUE) {
 
-  p.env <- parent.frame()
-
+  p.env <- parent.frame(1) # parent envir
+  gp.env <- parent.frame(2) # grandparent envir
+  
   if (inherits(value, "call"))
     qte <- quote(value)
   else
@@ -29,13 +30,13 @@ getArgs <- function(value, eval.calls = TRUE) {
   fun.name <- qte.list[[1]]
   qte.list[[1]] <- NULL
   
-  
   # check if argument values are named variables
   qte.list <- lapply(qte.list, function(x) {
-    if (class(x) == "name")
-      eval(x)
-    else
+    if (class(x) == "name") {
+      eval(x, envir = gp.env)
+    } else {
       x
+    }
   })
 
   arg.nm <- setdiff(names(qte.list), c("eval.calls"))
@@ -43,6 +44,21 @@ getArgs <- function(value, eval.calls = TRUE) {
   res.custom.args <- lapply(arg.nm, function(arg) qte[[arg]])
   names(res.custom.args) <- arg.nm
 
+  # have to handle case when custom argument is named variable
+  assign.evaluated.arg <- function(res.custom.args, qte.list) {
+    for (nm in names(res.custom.args)) {
+      el <- res.custom.args[[nm]]
+      # if argument is type 'name' it means that this is named argument
+      # so evaluated argument (its value) should be assigned to custom args
+      if (class(el) == "name" && !is.null(qte.list[[nm]])) {
+        res.custom.args[[nm]] <- qte.list[[nm]]
+      } 
+    }
+    return(res.custom.args)
+  }
+
+  res.custom.args <- assign.evaluated.arg(res.custom.args, qte.list) 
+  
   if (inherits(value, "call"))
     res.default.args <- formals(deparse(value[[1]]))
   else
@@ -95,9 +111,30 @@ getArgs <- function(value, eval.calls = TRUE) {
       res <- mergeNamedAndUnnamed(res, qte.list, common.args)
     }
   }
-
+  
   if (eval.calls)
-    lapply(res, function(x) if (inherits(x, "call")) eval(x) else x)
-  else
-    res
+    res <- lapply(res, function(x) {
+      if (inherits(x, "call")) {
+        
+        if (isListArg(x, envir = gp.env)) {
+          getListArg(x, envir = gp.env)
+        } else {
+          eval(x)
+        }
+      } else {
+        x
+      }
+    })
+  
+  # all argument must be evaluated and be values
+  is.non.evaluated <- sapply(res, class) %in% c("name", "call")
+  
+  if (any(is.non.evaluated)) {
+    elem <- sapply(res, class)[is.non.evaluated]
+    msg <- sprintf("Non evaluated argument(s): %s ",
+                   paste0(names(elem), ": ", elem, collapse = ", "))
+    stop(msg)
+  }
+  
+  return(res)
 }

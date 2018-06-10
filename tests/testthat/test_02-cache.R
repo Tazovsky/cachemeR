@@ -38,8 +38,6 @@ testthat::test_that("test output: all args are unnamed", {
   ref.res4 <- testFun(1:77, 3, list(d = 4, e = 2))
   res4 %c-% testFun(1:77, 3, list(d = 4, e = 2))
 
-  cache <- cachemerRef$new()
-
   testthat::expect_equal(ref.res4, res4)
 })
 
@@ -50,7 +48,7 @@ testthat::test_that("method: lastCache", {
   ref.res <- testFun(a = 1:100, 1, list(d = 2, e = 3))
   res %c-% testFun(a = 1:100, 1, list(d = 2, e = 3))
 
-  cache <- cachemer$new()
+  cache <- cachemerRef$new()
 
   testthat::expect_equal(ref.res, cache$lastCache$output)
   testthat::expect_equal(list(a = 1:100, b = 1, c =list(d = 2, e = 3)),
@@ -75,19 +73,20 @@ testthat::test_that("argument value is named variable", {
   x <- 1:123
   y <- 13
   z <- list(d = 11, e = 22)
-  
-  debugonce(getArgs)
-  
+
   ref.res <- testFun(a = x, 1, z)
   res %c-% testFun(a = x, 1, z)
-  
+
   testthat::expect_equal(ref.res, res)
-  
+
   ref.res <- testFun(a = x, 7, z)
   res %c-% testFun(a = x, 7, z)
-  
+
   testthat::expect_equal(ref.res, res)
   
+})
+
+testthat::test_that("argument value is named LIST variable", {
   x <- 1:123
   y <- 13
   z <- list(x = list(d = 11, e = 22))
@@ -96,5 +95,55 @@ testthat::test_that("argument value is named variable", {
   res %c-% testFun(a = x, 3, z$x)
   
   testthat::expect_equal(ref.res, res)
+  
+  # change value in list to be sure it will react to this change
+  z <- list(x = list(d = 3, e = 2))
+  ref.res <- testFun(a = x, 3, z$x)
+  res %c-% testFun(a = x, 3, z$x)
+  testthat::expect_equal(ref.res, res)
+  
+  x <- 1:12
+  y <- list(value = list(finally = 4))
+  z <- list(x = list(d = 11, e = 22))
+  
+  ref.res <- testFun(a = x, y$value$finally, z$x)
+  res %c-% testFun(a = x, y$value$finally, z$x)
+  testthat::expect_equal(ref.res, res)
+  
 })
+
+testthat::test_that("argument value is named NESTED LIST variable", {
+  
+  x <- 1:12
+  y <- list(value = list(finally = 4))
+  z <- list(x = list(d = 11, e = 22))
+  
+  ref.res <- testFun(a = x, y$value$finally, z$x)
+  res %c-% testFun(a = x, y$value$finally, z$x)
+  testthat::expect_equal(ref.res, res)
+})
+
+
+testthat::test_that("dollar '$' support for data frames", {
+  df <- iris
+  df$Sepal.Length2 <- df$Sepal.Length + 1
+  
+  testthat::expect_error(df$Sepal.Length2 %c-% df$Sepal.Length, 
+                         regexp = "`\\$` is not supported")
+})
+
+testthat::test_that("dollar '$' support for LHS", {
+    res.ref <- list(value = NULL)	
+    res <- list(value = NULL)	
+    
+    x <- 1:12	
+    y <- list(value = list(finally = 1))	
+    z <- list(x = list(d = 2, e = 3))	
+    
+    res.ref$value <- testFun(a = x, y$value$finally, z$x)	
+    res$value %c-% testFun(a = x, y$value$finally, z$x)	
+    
+    testthat::expect_equal(res.ref$value, res$value)	
+})
+
 

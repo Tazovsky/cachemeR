@@ -115,6 +115,7 @@ cachemer$set("public", "cacheme", function(fun.name,
                                          fun.body,
                                          arguments,
                                          output = NULL,
+                                         envir = parent.frame(1),
                                          algo = "md5") {
 
   set.seed(123)
@@ -153,8 +154,8 @@ cachemer$set("public", "cacheme", function(fun.name,
   if (is.null(private$shared$cache[[obj2cache$hash]])) {
     flog.info(sprintf("Caching '%s' for first time...", fun.name))
 
-    obj2cache$output <- eval(output)
-
+    obj2cache$output <- evalOutput(output, envir = envir)
+    
     private$shared$cache[[obj2cache$hash]] <- obj2cache
 
     # update last cache
@@ -170,7 +171,7 @@ cachemer$set("public", "cacheme", function(fun.name,
     flog.info(sprintf("Caching '%s'...", fun.name))
 
     # something has changed in arguments so need to retrieve outpu
-    obj2cache$output <- eval(output)
+    obj2cache$output <- evalOutput(output, envir = envir)
 
     # cache
     private$shared$cache[[obj2cache$hash]] <- obj2cache
