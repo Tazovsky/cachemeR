@@ -21,7 +21,13 @@
   
   value.args <- getArgs(value = expr, eval.calls = TRUE)
   cache <- cachemerRef$new()
-  cache$cacheme(fun.name, fun.body = functionBody(fun), value.args, expr)
+  cache$cacheme(
+    fun.name = fun.name,
+    fun.body = functionBody(fun),
+    arguments = value.args,
+    output = expr,
+    envir =  envir
+  )
 
   result <- cache$lastCache$output
 
