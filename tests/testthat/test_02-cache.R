@@ -132,6 +132,18 @@ testthat::test_that("dollar '$' support for data frames", {
                          regexp = "`\\$` is not supported")
 })
 
-
+testthat::test_that("dollar '$' support for LHS", {
+    res.ref <- list(value = NULL)	
+    res <- list(value = NULL)	
+    
+    x <- 1:12	
+    y <- list(value = list(finally = 1))	
+    z <- list(x = list(d = 2, e = 3))	
+    
+    res.ref$value <- testFun(a = x, y$value$finally, z$x)	
+    res$value %c-% testFun(a = x, y$value$finally, z$x)	
+    
+    testthat::expect_equal(res.ref$value, res$value)	
+})
 
 
