@@ -144,12 +144,6 @@ testthat::test_that("dollar '$' support for data frames", {
 
 testthat::test_that("dollar '$' support for LHS", {
   
-  dir.create(tmp.dir <- tempfile())
-  on.exit(unlink(tmp.dir, TRUE, TRUE))
-  
-  config.file <- file.path(tmp.dir, "config.yaml")
-  cache <- cachemer$new(path = config.file)
-  
   res.ref <- list(value = NULL)
   res <- list(value = NULL)
   
