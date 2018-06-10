@@ -135,7 +135,10 @@ testthat::test_that("argument value is named NESTED LIST variable", {
 testthat::test_that("dolar '$' support for data frames", {
   df <- iris
   df$Sepal.Length2 <- df$Sepal.Length + 1
-  df$Sepal.Length2 %c-% df$Sepal.Length + 1
+  
+  testthat::expect_error(df$Sepal.Length2 %c-% df$Sepal.Length, 
+                         regexp = "`\\$` is not supported")
+   
   
 })
 
