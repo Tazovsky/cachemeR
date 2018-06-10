@@ -16,13 +16,16 @@
   if (!is.function(fun))
     stop("Supports functions caching only.")
 
+  if (fun.name == "$")
+    stop("Extraction with `$` is not supported on RHS.")
+  
   value.args <- getArgs(value = expr, eval.calls = TRUE)
   cache <- cachemerRef$new()
   cache$cacheme(fun.name, fun.body = functionBody(fun), value.args, expr)
 
   result <- cache$lastCache$output
 
-  assign(deparse(target), result, envir = envir)
+  eval(call("<-", target, result), envir, envir)
 }
 
 

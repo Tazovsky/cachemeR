@@ -132,7 +132,7 @@ testthat::test_that("argument value is named NESTED LIST variable", {
 })
 
 
-testthat::test_that("dolar '$' support for data frames", {
+testthat::test_that("dollar '$' support for data frames", {
   df <- iris
   df$Sepal.Length2 <- df$Sepal.Length + 1
   
@@ -141,4 +141,26 @@ testthat::test_that("dolar '$' support for data frames", {
    
   
 })
+
+testthat::test_that("dollar '$' support for LHS", {
+  
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  
+  config.file <- file.path(tmp.dir, "config.yaml")
+  cache <- cachemer$new(path = config.file)
+  
+  res.ref <- list(value = NULL)
+  res <- list(value = NULL)
+  
+  x <- 1:12
+  y <- list(value = list(finally = 1))
+  z <- list(x = list(d = 2, e = 3))
+  
+  res.ref$value <- testFun(a = x, y$value$finally, z$x)
+  res$value %c-% testFun(a = x, y$value$finally, z$x)
+  
+  testthat::expect_equal(res.ref$value, res$value)
+})
+
 
