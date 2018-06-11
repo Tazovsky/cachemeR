@@ -183,8 +183,8 @@ cachemer$set("public", "cacheme", function(fun.name,
 })
 
 
-#' @title ref
-#' @description Inherits from \link[cachemeR]{cacher}
+#' @title cachemerRef
+#' @description Inherits from \code{\link{cachemer}}
 #'
 #' @importFrom R6 R6Class
 #' @export
