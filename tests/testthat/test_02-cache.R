@@ -172,4 +172,8 @@ testthat::test_that("clear method", {
   res2 %c-% testFun(a = 1:77, b = 7, c = list(d = 7, e = 7))
   
   testthat::expect_equal(hash, x$lastCache$hash)
+  
+  cache$clear(all = TRUE)
+  
+  testthat::expect_error(cachemerRef$new(), regexp = "Missing 'path' argument")
 })
