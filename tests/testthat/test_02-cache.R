@@ -190,4 +190,10 @@ testthat::test_that("dollar '$' support for LHS", {
   testthat::expect_equal(res.ref$value, res$value)	
 })
 
-
+testthat::test_that("simple value assignment", {
+  
+  testthat::expect_error(res %c-% 1, regexp = "not a function")
+  
+  var <- 2
+  testthat::expect_error(res %c-% var, regexp = "not a function")
+})

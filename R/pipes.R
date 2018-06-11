@@ -12,7 +12,11 @@
   expr <- substitute(value)
   envir <- parent.frame(1)
   fun.name <- as.character(expr)[1]
-
+  chain <- match.call()
+  
+  if (!is.call(chain[[3]]))
+    stop("RHS is not a function. If assigning value, please use `<-` operator.")
+  
   fun <- get(fun.name, envir = envir)
   if (!is.function(fun))
     stop("Supports functions caching only.")
