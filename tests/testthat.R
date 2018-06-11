@@ -1,4 +1,4 @@
 library(testthat)
-library(cacheR)
+library(cachemeR)
 
-test_check("cacheR")
+test_check("cachemeR")

@@ -5,6 +5,7 @@
 #' @param x variable to assign output from `value`
 #' @param value to be assigned to `x`
 #' @export
+#' @importFrom methods functionBody
 #' @rdname pipe
 `%c-%` <- function(x, value) {
   target <- substitute(x)
@@ -27,7 +28,7 @@
   cache <- cachemerRef$new()
   cache$cacheme(
     fun.name = fun.name,
-    fun.body = functionBody(fun),
+    fun.body = methods::functionBody(fun),
     arguments = value.args,
     output = expr,
     envir =  envir

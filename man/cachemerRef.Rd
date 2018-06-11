@@ -3,7 +3,7 @@
 \docType{data}
 \name{cachemerRef}
 \alias{cachemerRef}
-\title{ref}
+\title{cachemerRef}
 \format{\code{\link{R6Class}} object.}
 \usage{
 cachemerRef
@@ -12,6 +12,6 @@ cachemerRef
 Object of \code{\link{R6Class}} with methods for caching objects
 }
 \description{
-Inherits from \link[cachemeR]{cacher}
+Inherits from \code{\link{cachemer}}
 }
 \keyword{data}
