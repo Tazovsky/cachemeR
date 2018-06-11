@@ -2,8 +2,8 @@
 #'
 #' Test function
 #'
-#' @param x vector
-#' @param b numeric
+#' @param a numeric vector
+#' @param b numeric value
 #' @param c list
 #'
 #' @return numeric
@@ -35,6 +35,7 @@ testFun2 <- function() 1 + 3
 #' @return model
 #' @export
 #'
+#' @importFrom stats lm rnorm runif
 #' @rdname test-functions
 doLm <- function(rows, cols) {
   set.seed(1234)

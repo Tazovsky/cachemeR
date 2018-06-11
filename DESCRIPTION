@@ -14,9 +14,11 @@ Depends:
 Imports:
   magrittr,
   digest,
-  yaml
+  yaml,
+  methods
 Suggests:
   hexSticker,
   testthat,
-  knitr
+  knitr,
+    covr
 RoxygenNote: 6.0.1

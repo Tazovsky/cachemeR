@@ -7,7 +7,7 @@
 evalOutput(output, envir = parent.frame())
 }
 \arguments{
-\item{output}{}
+\item{output}{object of class `call`}
 
 \item{envir}{environment}
 }
