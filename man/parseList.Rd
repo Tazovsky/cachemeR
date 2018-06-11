@@ -7,7 +7,7 @@
 parseList(x, envir)
 }
 \arguments{
-\item{x}{}
+\item{x}{object of class `call` or `name`}
 
 \item{envir}{environment}
 }

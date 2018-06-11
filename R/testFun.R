@@ -2,8 +2,8 @@
 #'
 #' Test function
 #'
-#' @param x vector
-#' @param b numeric
+#' @param a numeric vector
+#' @param b numeric value
 #' @param c list
 #'
 #' @return numeric

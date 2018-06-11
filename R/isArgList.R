@@ -41,7 +41,7 @@ if (FALSE) {
 
 #' parseList
 #'
-#' @param x 
+#' @param x object of class `call` or `name`
 #' @param envir environment
 #'
 #' @return vector
@@ -59,7 +59,7 @@ parseList <- function(x, envir) {
 
 #' getListArg
 #'
-#' @param x 
+#' @param x object of class `call`
 #' @param envir environment
 #'
 #' @return list/value
@@ -89,7 +89,7 @@ getListArg <- function(x, envir) {
 #' 
 #' Evaluate `call` expression even when some elements are listss
 #' 
-#' @param output 
+#' @param output object of class `call`
 #' @param envir environment
 #'
 #' @return value of `call` expression

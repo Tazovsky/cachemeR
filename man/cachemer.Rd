@@ -34,7 +34,7 @@ TODO
 
 \examples{
 \dontrun{
-
+ TODO: add examples
 }
 
 }

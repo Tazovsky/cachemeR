@@ -7,7 +7,7 @@
 getListArg(x, envir)
 }
 \arguments{
-\item{x}{}
+\item{x}{object of class `call`}
 
 \item{envir}{environment}
 }

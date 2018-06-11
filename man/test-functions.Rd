@@ -13,15 +13,15 @@ testFun2()
 doLm(rows, cols)
 }
 \arguments{
-\item{b}{numeric}
+\item{a}{numeric vector}
+
+\item{b}{numeric value}
 
 \item{c}{list}
 
 \item{rows}{integer}
 
 \item{cols}{integer}
-
-\item{x}{vector}
 }
 \value{
 numeric

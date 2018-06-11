@@ -8,7 +8,7 @@
 #' @return Object of \code{\link{R6Class}} with methods for caching objects
 #' @format \code{\link{R6Class}} object.
 #' @examples \dontrun{
-#'
+#'  TODO: add examples
 #' }
 #'
 #' @field new(path,overwrite=TRUE) Initializes \code{\link{R6Class}} object
