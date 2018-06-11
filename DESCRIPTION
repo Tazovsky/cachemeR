@@ -19,5 +19,6 @@ Imports:
 Suggests:
   hexSticker,
   testthat,
-  knitr
+  knitr,
+    covr
 RoxygenNote: 6.0.1
