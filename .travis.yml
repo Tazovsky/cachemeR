@@ -5,6 +5,7 @@ cache: packages
 latex: false
 fortran: false
 r_build_args: '--no-build-vignettes'
+dist: trusty
 
 matrix:
   include:
@@ -25,6 +26,10 @@ matrix:
             - tesseract-ocr-eng
             - r-cran-rgdal
             - libfftw3-dev
+    - r: 3.4
+    - r: 3.5
+    - r: release
+    - r: devel
 
 r_packages:
   - covr
