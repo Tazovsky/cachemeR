@@ -40,11 +40,7 @@ testthat::test_that("test output: all args are default", {
   config.file <- file.path(tmp.dir, "config.yaml")
   cache <- cachemer$new(path = config.file)
   
-  
-  
   ref.res3 <- testFun()
-  
-  debugonce( %c-%)
   res3 %c-% testFun()
   
   testthat::expect_equal(ref.res3, res3)
