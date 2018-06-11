@@ -52,6 +52,10 @@ cachemer <- R6::R6Class(
         self$created_at <- created_at
       } else if (!is.null(private$shared$path)) {
         self$path <- private$shared$path
+        
+        if (!file.exists(self$path))
+          stop(sprintf("Yaml file does not exist"))
+        
         yml <- yaml::read_yaml(self$path)
         self$overwrite <- yml$created_at
       } else {
