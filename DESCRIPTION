@@ -1,7 +1,7 @@
 Package: cachemeR
 Type: Package
 Title: Easily cache R objects
-Version: 0.2.1
+Version: 0.2.2
 Author: Kamil Foltyński <kamil.foltynski@gmail.com>
 Maintainer: Kamil Foltyński <kamil.foltynski@gmail.com>
 Description: Convinient way of caching objects in R
@@ -14,6 +14,11 @@ Depends:
 Imports:
   magrittr,
   digest,
-  yaml
-Suggests: testthat
+  yaml,
+  methods
+Suggests:
+  hexSticker,
+  testthat,
+  knitr,
+    covr
 RoxygenNote: 6.0.1

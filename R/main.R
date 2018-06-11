@@ -8,7 +8,7 @@
 #' @return Object of \code{\link{R6Class}} with methods for caching objects
 #' @format \code{\link{R6Class}} object.
 #' @examples \dontrun{
-#'
+#'  TODO: add examples
 #' }
 #'
 #' @field new(path,overwrite=TRUE) Initializes \code{\link{R6Class}} object
@@ -115,6 +115,7 @@ cachemer$set("public", "cacheme", function(fun.name,
                                          fun.body,
                                          arguments,
                                          output = NULL,
+                                         envir = parent.frame(1),
                                          algo = "md5") {
 
   set.seed(123)
@@ -153,7 +154,7 @@ cachemer$set("public", "cacheme", function(fun.name,
   if (is.null(private$shared$cache[[obj2cache$hash]])) {
     flog.info(sprintf("Caching '%s' for first time...", fun.name))
 
-    obj2cache$output <- evalOutput(output, envir = parent.frame(2))
+    obj2cache$output <- evalOutput(output, envir = envir)
     
     private$shared$cache[[obj2cache$hash]] <- obj2cache
 
@@ -170,7 +171,7 @@ cachemer$set("public", "cacheme", function(fun.name,
     flog.info(sprintf("Caching '%s'...", fun.name))
 
     # something has changed in arguments so need to retrieve outpu
-    obj2cache$output <- eval(output)
+    obj2cache$output <- evalOutput(output, envir = envir)
 
     # cache
     private$shared$cache[[obj2cache$hash]] <- obj2cache
@@ -182,8 +183,8 @@ cachemer$set("public", "cacheme", function(fun.name,
 })
 
 
-#' @title ref
-#' @description Inherits from \link[cachemeR]{cacher}
+#' @title cachemerRef
+#' @description Inherits from \code{\link{cachemer}}
 #'
 #' @importFrom R6 R6Class
 #' @export
