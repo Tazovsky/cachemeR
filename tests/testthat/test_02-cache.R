@@ -109,7 +109,6 @@ testthat::test_that("argument value is named LIST variable", {
   ref.res <- testFun(a = x, y$value$finally, z$x)
   res %c-% testFun(a = x, y$value$finally, z$x)
   testthat::expect_equal(ref.res, res)
-  
 })
 
 testthat::test_that("argument value is named NESTED LIST variable", {
@@ -152,4 +151,25 @@ testthat::test_that("simple value assignment", {
   
   var <- 2
   testthat::expect_error(res %c-% var, regexp = "not a function")
+})
+
+testthat::test_that("clear method", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  res1 %c-% testFun(a = 1:77, b = 7, c = list(d = 7, e = 7))
+  
+  hash <- cache$lastCache$hash
+  
+  cache$clear()
+  
+  testthat::expect_null(cache$lastCache)
+  
+  x <- cachemerRef$new()
+  
+  res2 %c-% testFun(a = 1:77, b = 7, c = list(d = 7, e = 7))
+  
+  testthat::expect_equal(hash, x$lastCache$hash)
 })
