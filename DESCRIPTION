@@ -14,7 +14,8 @@ Depends:
 Imports:
   magrittr,
   digest,
-  yaml
+  yaml,
+  methods
 Suggests:
   hexSticker,
   testthat,

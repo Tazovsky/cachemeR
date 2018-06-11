@@ -35,6 +35,7 @@ testFun2 <- function() 1 + 3
 #' @return model
 #' @export
 #'
+#' @importFrom stats lm rnorm runif
 #' @rdname test-functions
 doLm <- function(rows, cols) {
   set.seed(1234)
