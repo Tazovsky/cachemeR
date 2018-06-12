@@ -1,7 +1,7 @@
 Package: cachemeR
 Type: Package
 Title: Easily cache R objects
-Version: 0.3.3.9000
+Version: 0.3.3.9001
 Author: Kamil Foltyński <kamil.foltynski@gmail.com>
 Maintainer: Kamil Foltyński <kamil.foltynski@gmail.com>
 Description: Convinient way of caching objects in R
