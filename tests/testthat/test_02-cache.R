@@ -44,7 +44,9 @@ testthat::test_that("test output: all args are unnamed", {
 testthat::context("test R6 object and methods")
 
 testthat::test_that("method: lastCache", {
-
+  
+  testthat::skip_if(Sys.getenv("TRAVIS") == TRUE)
+  
   ref.res <- testFun(a = 1:100, 1, list(d = 2, e = 3))
   res %c-% testFun(a = 1:100, 1, list(d = 2, e = 3))
 
