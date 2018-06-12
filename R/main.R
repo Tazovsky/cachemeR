@@ -52,6 +52,10 @@ cachemer <- R6::R6Class(
         self$created_at <- created_at
       } else if (!is.null(private$shared$path)) {
         self$path <- private$shared$path
+        
+        if (!file.exists(self$path))
+          stop(sprintf("Yaml file does not exist"))
+        
         yml <- yaml::read_yaml(self$path)
         self$overwrite <- yml$created_at
       } else {
@@ -71,16 +75,12 @@ cachemer <- R6::R6Class(
       cat("created at:", as.character(self$created_at), "\n")
       cat("count:", self$count, "\n")
     },
-    reset = function() {
-      self$path <- NULL
-      self$overwrite <- NULL
-      self$created_at <- NULL
-      self$count <- NULL
-
-
-      private$shared$path <- NULL
-      private$shared$cache <- NULL
-      private$shared$last.cache <- NULL
+    clear = function(all = FALSE) {
+      flog.debug("Clearing cache")
+      obj.names <- names(private$shared)
+      exclude <- if (all) "envir" else c("envir", "path")
+      obj.names <- obj.names[!obj.names %in% exclude]
+      invisible(lapply(obj.names, function(nm) private$shared[[nm]] <- NULL))
     }
   ),
   private = list(
