@@ -22,3 +22,8 @@ r_packages:
 
 after_success:
   - Rscript -e 'Sys.setenv(TRAVIS = TRUE); covr::codecov()'
+  - Rscript -e 'Sys.setenv(TRAVIS = TRUE); covr::coveralls()'
+  
+notifications:
+  on_success: never
+  on_failure: always
