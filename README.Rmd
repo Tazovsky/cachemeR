@@ -1,0 +1,57 @@
+# ---
+# output:
+#   md_document:
+#     variant: markdown_github
+# ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"#,
+  # fig.path = "man/figures/"
+)
+library(futile.logger)
+flog.threshold(ERROR)
+
+```
+
+# cachemeR
+
+[![Build Status](https://travis-ci.org/Tazovsky/cachemeR.svg?branch=devel)](https://travis-ci.org/Tazovsky/cachemeR)
+[![Coverage Status](https://coveralls.io/repos/github/Tazovsky/cachemeR/badge.svg?branch=devel)](https://coveralls.io/github/Tazovsky/cachemeR?branch=devel)
+
+## Overview
+
+## Installation
+
+```{r, eval = FALSE}
+# Install from GitHub until it is on CRAN:
+devtools::install_github("Tazovsky/cachemeR")
+```
+
+## Usage
+
+## Use cases
+
+## Microbenchmark
+
+```{r setup, message=FALSE, echo=FALSE, include=TRUE, eval=FALSE}
+  library(cachemeR)
+
+  cache <- cachemer$new(path = "config.yaml")
+  
+  microbenchmark::microbenchmark(
+    res <- testFun(a = 1:100, b = 2, c = list(d = 3, e = 4)),
+    res %c-% testFun(a = 1:100, b = 2, c = list(d = 3, e = 4)),
+    times = 50L
+  )
+  
+  microbenchmark::microbenchmark(
+    res <- doLm(rows = 5000, cols = 100),
+    res.cached %c-% doLm(rows = 5000, cols = 100),
+    times = 50L
+  )
+  
+```
+
+
