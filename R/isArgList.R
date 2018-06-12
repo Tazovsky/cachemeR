@@ -99,7 +99,7 @@ evalOutput <- function(output, envir = parent.frame()) {
   stopifnot(class(output) == "call")
   
   # if any argument is list, then get its value before evaluating function
-  for (i in 2:length(output)) {
+  for (i in 1:length(output)) {
     if (isListArg(output[[i]], envir = envir)) {
       output[[i]] <- getListArg(output[[i]], envir = envir)
     }
