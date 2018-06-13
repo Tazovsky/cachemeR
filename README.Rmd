@@ -4,15 +4,14 @@
 #     variant: markdown_github
 # ---
 
-```{r, include = FALSE}
+```{r, include = FALSE, echo=FALSE, message=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = ">"#,
   # fig.path = "man/figures/"
 )
 library(futile.logger)
-flog.threshold(ERROR)
-
+library(cachemeR)
 ```
 
 # cachemeR
@@ -22,9 +21,35 @@ flog.threshold(ERROR)
 
 ## Overview
 
+`cachemeR` is package to cache objects in `R`. The main goals of this `cachemeR` package are:
+
+1. Cache objects as easily as it is possible
+2. Adapt code to cache object with the least effort
+
+### pipe operator `%c-%`
+
+The core function of `cachmeR` is pipe operator `%c-%` which can be used instead of
+assignment operator `<-`. If so, then right hand side of assignment will be cached:
+
+```{r pipe_example1, message=FALSE, echo=TRUE, include=TRUE, eval=TRUE}
+flog.threshold(INFO)
+cache <- cachemeR::cachemer$new("config.yaml") # init cache for first time
+res %c-% testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
+res
+```
+
+If you re-run that line and __both `testFun` body and arguments haven't changed__
+then `testFun` output will be restored from cache:
+
+```{r pipe_example2, message=FALSE, echo=TRUE, include=TRUE, eval=TRUE}
+res %c-% testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
+res
+```
+
+
 ## Installation
 
-```{r, eval = FALSE}
+```{r install, eval = FALSE}
 # Install from GitHub until it is on CRAN:
 devtools::install_github("Tazovsky/cachemeR")
 ```
@@ -66,7 +91,7 @@ Let's make some performance tests:
 
 ```{r bench2, message=FALSE, echo=FALSE, include=TRUE, eval=TRUE}
   library(cachemeR)
-
+  flog.threshold(ERROR)
   # initialize cache
   cache <- cachemer$new(path = "config.yaml")
   
