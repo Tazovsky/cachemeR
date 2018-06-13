@@ -7,7 +7,7 @@
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"#,
+  comment = ">"#,
   # fig.path = "man/figures/"
 )
 library(futile.logger)
@@ -31,13 +31,18 @@ devtools::install_github("Tazovsky/cachemeR")
 
 ## Usage
 
+## Limitations
+
 ## Use cases
 
 ## Microbenchmark
 
-```{r setup, message=FALSE, echo=FALSE, include=TRUE, eval=FALSE}
+Let's make some performance tests:
+
+```{r bench, message=FALSE, echo=TRUE, include=TRUE, eval=FALSE}
   library(cachemeR)
 
+  # initialize cache
   cache <- cachemer$new(path = "config.yaml")
   
   microbenchmark::microbenchmark(
@@ -45,7 +50,7 @@ devtools::install_github("Tazovsky/cachemeR")
     res %c-% testFun(a = 1:100, b = 2, c = list(d = 3, e = 4)),
     times = 50L
   )
-  
+
   microbenchmark::microbenchmark(
     res <- doLm(rows = 5000, cols = 100),
     res.cached %c-% doLm(rows = 5000, cols = 100),
@@ -53,5 +58,35 @@ devtools::install_github("Tazovsky/cachemeR")
   )
   
 ```
+
+ `testFun` is simple function which makes simple mathematical operations like sin, sum, etc
+  so caching it will be slower than restoring from cache. 
+  In turn, `doLm` fits linear model and much slower - you can significant 
+  boost on function evaluation when using cache:
+
+```{r bench2, message=FALSE, echo=FALSE, include=TRUE, eval=TRUE}
+  library(cachemeR)
+
+  # initialize cache
+  cache <- cachemer$new(path = "config.yaml")
+  
+  # testFun() is simple function which makes simple mathematical operations like sin, sum, etc
+  # so caching it will be slower than restoring from cache
+  microbenchmark::microbenchmark(
+    res <- testFun(a = 1:100, b = 2, c = list(d = 3, e = 4)),
+    res %c-% testFun(a = 1:100, b = 2, c = list(d = 3, e = 4)),
+    times = 50L
+  )
+
+  # in turn, doLm() fits linear model and is slower and you can notice there is significant 
+  # boost on evaluation when using cache:
+  microbenchmark::microbenchmark(
+    res <- doLm(rows = 5000, cols = 100),
+    res.cached %c-% doLm(rows = 5000, cols = 100),
+    times = 50L
+  )
+  
+```
+
 
 
