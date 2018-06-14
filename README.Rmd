@@ -26,26 +26,8 @@ library(cachemeR)
 1. Cache objects as easily as it is possible
 2. Adapt code to cache object with the least effort
 
-### pipe operator `%c-%`
-
-The core function of `cachmeR` is pipe operator `%c-%` which can be used instead of
-assignment operator `<-`. If so, then right hand side of assignment will be cached:
-
-```{r pipe_example1, message=FALSE, echo=TRUE, include=TRUE, eval=TRUE}
-flog.threshold(INFO)
-cache <- cachemeR::cachemer$new("config.yaml") # init cache for first time
-res %c-% testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
-res
-```
-
 If you re-run that line and __both `testFun` body and arguments haven't changed__
 then `testFun` output will be restored from cache:
-
-```{r pipe_example2, message=FALSE, echo=TRUE, include=TRUE, eval=TRUE}
-res %c-% testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
-res
-```
-
 
 ## Installation
 
@@ -56,7 +38,43 @@ devtools::install_github("Tazovsky/cachemeR")
 
 ## Usage
 
+### Initialize cache
+
+Initialize cache object:
+
+```{r init, message=FALSE, echo=TRUE, include=TRUE, eval=TRUE}
+library(cachemeR)
+cache <- cachemer$new(path = "config.yaml")
+```
+
+Object should be initialized for first time only.
+
+### pipe operator `%c-%`
+
+The core function of `cachemeR` is pipe operator `%c-%` which can be used instead of
+assignment operator `<-`. If so, then Right Hand Side (`RHS`) of assignment will be cached:
+
+```{r pipe_example1, message=FALSE, echo=TRUE, include=TRUE, eval=TRUE}
+flog.threshold(INFO) # turn on logger
+res %c-% testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
+res
+```
+
 ## Limitations
+
+Caching won't work if there is another operator (for example `+`, `-`, `%>%`, etc.) next to 
+first element of `RHS`:
+
+```{r limit, message=FALSE, echo=TRUE, include=TRUE, eval=TRUE}
+res %c-% testFun(a = 1:40, b = 1, c = list(d = 2, e = 3))
+res
+res2 %c-% testFun(a = 1:40, b = 1, c = list(d = 2, e = 3)) + 1
+res2
+
+# returns `FALSE` because `+ 1` has not been captured by caching pipe operator `%c-%`
+res == res2 - 1 
+```
+
 
 ## Use cases
 
@@ -65,21 +83,17 @@ devtools::install_github("Tazovsky/cachemeR")
 Let's make some performance tests:
 
 ```{r bench, message=FALSE, echo=TRUE, include=TRUE, eval=FALSE}
-  library(cachemeR)
-
-  # initialize cache
-  cache <- cachemer$new(path = "config.yaml")
   
   microbenchmark::microbenchmark(
     res <- testFun(a = 1:100, b = 2, c = list(d = 3, e = 4)),
     res %c-% testFun(a = 1:100, b = 2, c = list(d = 3, e = 4)),
-    times = 50L
+    times = 10L
   )
 
   microbenchmark::microbenchmark(
     res <- doLm(rows = 5000, cols = 100),
     res.cached %c-% doLm(rows = 5000, cols = 100),
-    times = 50L
+    times = 10L
   )
   
 ```
@@ -91,7 +105,7 @@ Let's make some performance tests:
 
 ```{r bench2, message=FALSE, echo=FALSE, include=TRUE, eval=TRUE}
   library(cachemeR)
-  flog.threshold(ERROR)
+  flog.threshold(ERROR) # turn off logger
   # initialize cache
   cache <- cachemer$new(path = "config.yaml")
   
