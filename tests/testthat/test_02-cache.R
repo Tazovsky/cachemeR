@@ -81,13 +81,13 @@ testthat::test_that("method: lastCache", {
   testthat::expect_equal("6909e86c41e10a11431fb13433767de4",
                          cache$lastCache$hashes$fun.name)
   
-  testthat::expect_equal("c3783d8b264c9c5addfb001af37976f8",
+  testthat::expect_equal("66d2800566a3d78c640ff2a1905f046d",
                          cache$lastCache$hashes$fun.body)
   
   testthat::expect_equal("f5de5e744f53b90b28a3a3cce3e23114",
                          cache$lastCache$hashes$arguments)
   
-  testthat::expect_equal("6446ef4dc350c0f6418be1b91f6b2d9f",
+  testthat::expect_equal("e5c63c88c142cb809b2bcd60a8b98ab9",
                          cache$lastCache$hash)
 })
 
