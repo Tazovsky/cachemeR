@@ -7,17 +7,17 @@
 # flog.remove("mylog")
 
 
-fun1 <- function(x) {
+fun1 <- function(x, multiplier = 3) {
   print("fun1")
-  x
+  x * multiplier
 }
 fun2 <- function(x) {
   print("fun2")
   x
 }
-fun3 <- function(x) {
+fun3 <- function(x, multiplier = 2) {
   print("fun3")
-  x
+  x * 2
 }
 
 
@@ -74,7 +74,10 @@ is_function <- function(x, env) {
         for (nm in names(res)) {
           if (!is.null(splitted[[nm]])) {
             idx <- length(res[[nm]]) + 1
-            res[[nm]][[idx]] <- splitted[[nm]][1L]
+            
+            if (length(splitted[[nm]]) > 0 )
+              res[[nm]][[idx]] <- splitted[[nm]][[1]]
+            
           }
         }
         
