@@ -26,7 +26,8 @@ is_pipe <- function(x) {
 }
 
 is_function <- function(x, env) {
-  is.call(x) && is.function(get(as.character(x)[1], env))
+  is.call(x) && is.function(get(as.character(x)[1], env)) ||
+  is.name(x) && is.function(get(as.character(x), env))
 }
 
 `%c%` <- function(x, value = NULL) {
@@ -62,6 +63,8 @@ is_function <- function(x, env) {
       stop("Missing argument 'x'")
     
     res <- list(pipes = list(), functions = list(), values = list(), others = list())
+    
+    browser()
     
     for (i in 1:length(x)) {
       
@@ -99,9 +102,9 @@ is_function <- function(x, env) {
     res
   }
   
-  spr <- split_chain(lhs, env)
+  chain_parts <- split_chain(lhs, env)
   
-  fun2check <- spr$functions[[1]][[1]]
+  fun2check <- chain_parts$functions[[1]]
   
   browser()
   
@@ -115,6 +118,6 @@ is_function <- function(x, env) {
 
 
 
-x <- 3 %>% fun1() %>% fun2() %c% .
+# x <- 3 %>% fun1() %>% fun2() %c% .
 
-
+fun1(3) %c% .
