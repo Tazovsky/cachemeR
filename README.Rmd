@@ -60,6 +60,30 @@ res %c-% testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
 res
 ```
 
+
+
+
+## methods
+
+Cached object are available every time you want thanks to __active bindings__. 
+To get them new `cachemerRef` object should be created by:
+
+`cache <- cachemerRef$new()` 
+
+To use `cachemeR` methods create new object
+
+`cache <- cachemerRef$new()`
+
+Available methods:
+
+### `cache$lastCache` - get last cached object
+
+### `cache$clear()`
+
+### `cache$getEnv()`
+
+### `cache$getShared(nm)`
+
 ## Limitations
 
 Caching won't work if there is another operator (for example `+`, `-`, `%>%`, etc.) next to 
@@ -73,6 +97,7 @@ res2
 
 # returns `FALSE` because `+ 1` has not been captured by caching pipe operator `%c-%`
 res == res2 - 1 
+res == res2
 ```
 
 
