@@ -131,8 +131,10 @@ getArgs <- function(value, eval.calls = TRUE) {
   
   if (any(is.non.evaluated)) {
     elem <- sapply(res, class)[is.non.evaluated]
-    msg <- sprintf("Non evaluated argument(s): %s ",
-                   paste0(names(elem), ": ", elem, collapse = ", "))
+    msg <- sprintf(
+      "Non evaluated argument(s): %s ",
+      paste0(names(elem), " (class: \"", elem, "\")", collapse = ", ")
+    )
     stop(msg)
   }
   
