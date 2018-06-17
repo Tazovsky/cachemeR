@@ -87,6 +87,7 @@ is_function <- function(x, env) {
   
   chain_parts <- split_chain(lhs, env)
   
+  getChainArgs <- function(chain_parts) {
   # get functions arguments
   for (i in 1:length(chain_parts$functions)) {
     
@@ -109,6 +110,8 @@ is_function <- function(x, env) {
     }
     
   }
+    chain_parts 
+  }
   
   
   # TODO#1: cache objects here
@@ -117,6 +120,39 @@ is_function <- function(x, env) {
   
   return(chain_parts)
 }
+
+testthat::test_that("split_chain(), getChainArgs()", {
+  
+  res <- split_chain(quote(3 %>% fun1() %>% fun2()), env = parent.frame(1))
+  args <- getChainArgs(res)
+  
+  # saveRDS(res, "inst/testdata/split_chain.RDS")
+  # saveRDS(args, "inst/testdata/getChainArgs.RDS")
+  
+  testthat::expect_equal(readRDS("inst/testdata/split_chain.RDS"), res)
+  testthat::expect_equal(readRDS("inst/testdata/getChainArgs.RDS"), args)
+})
+
+
+
+
+
+class(args)
+
+
+
+equals(dput(ref), dput(res))
+
+testthat::expect_equal(
+  as.character(dput(ref)),
+  as.character(dput(res))
+)
+
+
+quote(res)
+
+deparse(res)
+deparse(ref)
 
 # debugonce(`%c%`)
 x <- 3 %>% fun1() %>% fun2() %c% .
