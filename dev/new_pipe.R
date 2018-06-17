@@ -133,32 +133,6 @@ testthat::test_that("split_chain(), getChainArgs()", {
   testthat::expect_equal(readRDS("inst/testdata/getChainArgs.RDS"), args)
 })
 
-
-
-
-
-class(args)
-
-
-
-equals(dput(ref), dput(res))
-
-testthat::expect_equal(
-  as.character(dput(ref)),
-  as.character(dput(res))
-)
-
-
-quote(res)
-
-deparse(res)
-deparse(ref)
-
-# debugonce(`%c%`)
-x <- 3 %>% fun1() %>% fun2() %c% .
-
-# fun1(3) %c% .
-
 testthat::test_that("`%c%`: one LHS function output", {
   
   res.ref <- list(x = "", multiplier = 3)
