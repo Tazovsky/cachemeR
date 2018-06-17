@@ -30,6 +30,15 @@ is_function <- function(x, env) {
   is.name(x) && is.function(get(as.character(x), env))
 }
 
+#' \%c\%
+#'
+#' @param x 
+#' @param value 
+#'
+#' @return
+#' @export
+#' @importFrom utils getFromNamespace
+#' @examples
 `%c%` <- function(x, value = NULL) {
   target <- substitute(x)
   expr <- substitute(value)
@@ -39,6 +48,12 @@ is_function <- function(x, env) {
   env = new.env(parent = envir)
   lhs <- chain[[2]]
   
+  browser()
+  if (is_parenthesized(lhs))
+    lhs <- lhs[[-1]] # rm parenthesis
+  
+  
+    
   split_chain <- function(x, env) {
     
     if (missing(env))
@@ -114,6 +129,7 @@ is_function <- function(x, env) {
     chain_parts 
   }
   
+  args <- getChainArgs(chain_parts)
   
   # TODO#1: cache objects here
   # TODO#2: if object exists in cache then return its output value, else cache new object
@@ -121,6 +137,14 @@ is_function <- function(x, env) {
   
   return(chain_parts)
 }
+
+
+# temporery checks:
+res <- (fun1(3) + 1) %c% .
+
+
+
+# ------------------------- unit tests
 
 testthat::test_that("split_chain(), getChainArgs()", {
   
