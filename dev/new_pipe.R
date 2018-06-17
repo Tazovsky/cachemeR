@@ -39,21 +39,6 @@ is_function <- function(x, env) {
   env = new.env(parent = envir)
   lhs <- chain[[2]]
   
-  split_chain_ <- function(el, env) {
-    
-    res <- list(pipes = NULL, functions = NULL, values = NULL, others = NULL)
-    
-    if (is_pipe(el))
-      res[["pipes"]][[i]] <- c(res[["pipes"]][[i]], el)
-    else if (is_function(el, env))
-      res[["functions"]][[i]] <- c(res[["functions"]][[i]], el)
-    else
-      res[["others"]][[i]] <- c(res[["others"]][[i]], el)
-    
-    
-    res
-  }
-  
   split_chain <- function(x, env) {
     
     if (missing(env))
@@ -63,8 +48,6 @@ is_function <- function(x, env) {
       stop("Missing argument 'x'")
     
     res <- list(pipes = list(), functions = list(), values = list(), others = list())
-    
-    browser()
     
     for (i in 1:length(x)) {
       
@@ -89,7 +72,7 @@ is_function <- function(x, env) {
         res[["pipes"]][[idx]] <- el
       } else if (is_function(el, env)) {
         idx <- length(res[["functions"]]) + 1L
-        res[["functions"]][[idx]] <- el
+        res[["functions"]][[idx]] <- list(name = el)
       } else if (is.numeric(el)) {
         idx <- length(res[["values"]]) + 1L
         res[["values"]][[idx]] <- el
@@ -104,20 +87,47 @@ is_function <- function(x, env) {
   
   chain_parts <- split_chain(lhs, env)
   
-  fun2check <- chain_parts$functions[[1]]
+  # get functions arguments
+  for (i in 1:length(chain_parts$functions)) {
+    
+    fun2check <- chain_parts$functions[[i]]$name
+    
+    if (!is.null(fun2check)) {
+      cl <-
+        call(
+          "getArgs",
+          # if arg is not declared then "getArgs()" fails and should be wrapped in "substitute"
+          call("substitute", fun2check),
+          eval.calls = TRUE,
+          allow.non.eval = TRUE
+        )
+      
+      args <- eval(cl)
+      
+      # assign arguments
+      chain_parts$functions[[i]]$args <- args
+    }
+    
+  }
   
+  
+  # TODO#1: cache objects here
+  # TODO#2: if object exists in cache then return its output value, else cache new object
   browser()
   
-  args <- getArgs(fun2check)
-  
+  return(chain_parts)
 }
 
+# debugonce(`%c%`)
+x <- 3 %>% fun1() %>% fun2() %c% .
 
+# fun1(3) %c% .
 
-
-
-
-
-# x <- 3 %>% fun1() %>% fun2() %c% .
-
-fun1(3) %c% .
+testthat::test_that("`%c%`: one LHS function output", {
+  
+  res.ref <- list(x = "", multiplier = 3)
+  res <- fun1(3) %c% .
+  
+  testthat::expect_true(res.ref$x == res$x)
+  testthat::expect_equal(res.ref$multiplier, res$multiplier)
+})
