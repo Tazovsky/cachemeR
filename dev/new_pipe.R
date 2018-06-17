@@ -97,7 +97,8 @@ is_function <- function(x, env) {
       cl <-
         call(
           "getArgs",
-          # if arg is not declared then "getArgs()" fails and should be wrapped in "substitute"
+          # if arg is not declared then "getArgs()" fails and should be 
+          # wrapped in "substitute" to avoid that
           call("substitute", fun2check),
           eval.calls = TRUE,
           allow.non.eval = TRUE
