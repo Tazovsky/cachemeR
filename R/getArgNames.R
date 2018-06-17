@@ -2,7 +2,9 @@
 #' getArgs
 #'
 #' @param value function call
-#' @param eval.calls logical
+#' @param eval.calls logical (default \code{TRUE})
+#' @param allow.non.eval logical (default \code{FALSE})
+#' if \code{TRUE} then allow non evaluated arguments in output
 #'
 #' @return list
 #' @export
@@ -13,7 +15,7 @@
 #' }
 #' getArgs(testFun())
 #' }
-getArgs <- function(value, eval.calls = TRUE) {
+getArgs <- function(value, eval.calls = TRUE, allow.non.eval = FALSE) {
 
   p.env <- parent.frame(1) # parent envir
   gp.env <- parent.frame(2) # grandparent envir
@@ -62,8 +64,12 @@ getArgs <- function(value, eval.calls = TRUE) {
   if (inherits(value, "call"))
     res.default.args <- formals(deparse(value[[1]]))
   else
-    res.default.args <- formals(deparse(substitute(value)[[1]]))
-
+    res.default.args <- tryCatch({
+      formals(deparse(substitute(value)[[1]]))
+    }, error = function(e) {
+      formals(deparse(substitute(value)))
+    })
+  
   common.args <- intersect(names(res.custom.args), names(res.default.args))
 
   if (length(common.args) > 0) {
@@ -129,7 +135,7 @@ getArgs <- function(value, eval.calls = TRUE) {
   # all argument must be evaluated and be values
   is.non.evaluated <- sapply(res, class) %in% c("name", "call")
   
-  if (any(is.non.evaluated)) {
+  if (!allow.non.eval && any(is.non.evaluated)) {
     elem <- sapply(res, class)[is.non.evaluated]
     msg <- sprintf(
       "Non evaluated argument(s): %s ",

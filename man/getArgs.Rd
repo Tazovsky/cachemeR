@@ -4,12 +4,15 @@
 \alias{getArgs}
 \title{getArgs}
 \usage{
-getArgs(value, eval.calls = TRUE)
+getArgs(value, eval.calls = TRUE, allow.non.eval = FALSE)
 }
 \arguments{
 \item{value}{function call}
 
-\item{eval.calls}{logical}
+\item{eval.calls}{logical (default \code{TRUE})}
+
+\item{allow.non.eval}{logical (default \code{FALSE})
+if \code{TRUE} then allow non evaluated arguments in output}
 }
 \value{
 list
