@@ -34,6 +34,10 @@ is_pipe <- function(x) {
 #' @export
 #'
 is_function <- function(x, env) {
-  is.call(x) && is.function(get(as.character(x)[1], env)) ||
-    is.name(x) && is.function(get(as.character(x), env))
+  is.call(x) &&
+    exists(as.character(x)[1], envir = env) &&
+    is.function(get(as.character(x)[1], env)) ||
+    is.name(x) &&
+    exists(as.character(x), envir = env) &&
+    is.function(get(as.character(x), env))
 }
