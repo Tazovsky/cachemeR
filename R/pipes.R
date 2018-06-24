@@ -14,6 +14,9 @@
   fun.name <- as.character(expr)[1]
   chain <- match.call()
   
+  if (is_parenthesized(expr))
+    expr <- expr[[-1L]]
+  
   if (!is.call(chain[[3]]))
     stop("RHS is not a function. If assigning value, please use `<-` operator.")
   
@@ -23,6 +26,8 @@
 
   if (fun.name == "$")
     stop("Extraction with `$` is not supported on RHS.")
+  
+  spr <- split_chain(expr, envir)
   
   value.args <- getArgs(value = expr, eval.calls = TRUE)
   cache <- cachemerRef$new()

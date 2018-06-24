@@ -224,3 +224,15 @@ testthat::test_that("clear method", {
   
   testthat::expect_error(cachemerRef$new(), regexp = "Missing 'path' argument")
 })
+
+testthat::test_that("%c-%: RHS is parenthesized", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  res.ref <- testFun(a = 5:55, b = 5, c = list(d = 5, e = 5)) * 2
+  res %c-% (testFun(a = 5:55, b = 5, c = list(d = 5, e = 5)) * 2)
+  
+  testthat::expect_equal(res, res.ref)
+})
