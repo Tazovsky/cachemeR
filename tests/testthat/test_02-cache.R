@@ -224,3 +224,24 @@ testthat::test_that("clear method", {
   
   testthat::expect_error(cachemerRef$new(), regexp = "Missing 'path' argument")
 })
+
+testthat::test_that("setLogger method", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  cache$setLogger(TRUE)
+  
+  testthat::expect_output(cache$setLogger(TRUE), "Logger is on")
+  
+  testthat::expect_output(
+    res1 %c-% testFun(a = 1:77, b = 7, c = list(d = 7, e = 7)),
+    "Caching 'testFun' for first time")
+  
+  cache$setLogger(FALSE)
+  
+  testthat::expect_output(
+    res1 %c-% testFun(a = 1:77, b = 7, c = list(d = 7, e = 7)),
+    NA)
+  
+})
