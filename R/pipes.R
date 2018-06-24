@@ -27,8 +27,6 @@
   if (fun.name == "$")
     stop("Extraction with `$` is not supported on RHS.")
   
-  spr <- split_chain(expr, envir)
-  
   value.args <- getArgs(value = expr, eval.calls = TRUE)
   cache <- cachemerRef$new()
   cache$cacheme(
