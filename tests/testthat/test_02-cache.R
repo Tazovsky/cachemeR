@@ -235,4 +235,9 @@ testthat::test_that("%c-%: RHS is parenthesized", {
   res %c-% (testFun(a = 5:55, b = 5, c = list(d = 5, e = 5)) * 2)
   
   testthat::expect_equal(res, res.ref)
+  
+  res.ref <- testFun(a = 5:55, b = 5, c = list(d = 5, e = 5)) * 3
+  res %c-% (testFun(a = 5:55, b = 5, c = list(d = 5, e = 5)) * 3)
+  
+  testthat::expect_equal(res, res.ref)
 })
