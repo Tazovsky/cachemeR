@@ -3,6 +3,7 @@
 #'
 #' @importFrom R6 R6Class
 #' @importFrom yaml read_yaml write_yaml
+#' @importFrom futile.logger flog.threshold flog.info
 #' @export
 #' @keywords data
 #' @return Object of \code{\link{R6Class}} with methods for caching objects
@@ -26,7 +27,13 @@ cachemer <- R6::R6Class(
     overwrite = NULL,
     count = NULL,
     initialize = function(path, overwrite = TRUE) {
-
+      
+      if (private$shared$logger$is.on)
+        flog.threshold(INFO, name = private$shared$logger$name)
+      else
+        flog.threshold(ERROR, name = private$shared$logger$name)
+      
+      
       if (!missing(path) && !is.null(path)) {
 
         if (!grepl(".*\\.yaml$|.*\\.yml$", path))
@@ -76,9 +83,9 @@ cachemer <- R6::R6Class(
       cat("count:", self$count, "\n")
     },
     clear = function(all = FALSE) {
-      flog.debug("Clearing cache")
+      flog.info("Clearing cache", name = private$shared$logger$name)
       obj.names <- names(private$shared)
-      exclude <- if (all) "envir" else c("envir", "path")
+      exclude <- if (all) c("envir", "logger") else c("envir", "path", "logger")
       obj.names <- obj.names[!obj.names %in% exclude]
       invisible(lapply(obj.names, function(nm) private$shared[[nm]] <- NULL))
     }
@@ -91,6 +98,7 @@ cachemer <- R6::R6Class(
       e$path <- NULL
       e$cache <- NULL
       e$last.cache <- NULL
+      e$logger <- list(name = "cachemer.logger", is.on = FALSE)
       e
     }
   ),
@@ -106,6 +114,22 @@ cachemer <- R6::R6Class(
     },
     lastCache = function() {
       private$shared$last.cache
+    },
+    setLogger = function() function(is.on) {
+      
+      if (missing(is.on))
+        stop("'is.on' argument is missing")
+      
+      stopifnot(is.logical(is.on))
+      
+      if (is.on) {
+        private$shared$logger$is.on <- TRUE
+        invisible(flog.threshold(INFO, name = private$shared$logger$name))
+        flog.info("Logger is on", name = private$shared$logger$name)
+      } else {
+        private$shared$logger$is.on <- FALSE
+        invisible(flog.threshold(ERROR, name = private$shared$logger$name))
+      }
     }
   )
 )
@@ -150,9 +174,10 @@ cachemer$set("public", "cacheme", function(fun.name,
       algo = algo
     )
   )
-
+  
   if (is.null(private$shared$cache[[obj2cache$hash]])) {
-    flog.info(sprintf("Caching '%s' for first time...", fun.name))
+    flog.info(sprintf("Caching '%s' for first time...", fun.name),
+              name = private$shared$logger$name)
 
     obj2cache$output <- evalOutput(output, envir = envir)
     
@@ -162,13 +187,15 @@ cachemer$set("public", "cacheme", function(fun.name,
     private$shared$last.cache <- obj2cache
 
   } else if (!is.null(private$shared$cache[[obj2cache$hash]])) {
-    flog.info(sprintf("'%s' is already cached...", fun.name))
+    flog.info(sprintf("'%s' is already cached...", fun.name),
+              name = private$shared$logger$name)
 
     # update last cache
     private$shared$last.cache <- private$shared$cache[[obj2cache$hash]]
 
   } else {
-    flog.info(sprintf("Caching '%s'...", fun.name))
+    flog.info(sprintf("Caching '%s'...", fun.name),
+              name = private$shared$logger$name)
 
     # something has changed in arguments so need to retrieve outpu
     obj2cache$output <- evalOutput(output, envir = envir)
@@ -193,6 +220,4 @@ cachemer$set("public", "cacheme", function(fun.name,
 #' @format \code{\link{R6Class}} object.
 cachemerRef <- R6Class("cachemerRef",
                inherit = cachemer)
-
-
 
