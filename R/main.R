@@ -4,6 +4,8 @@
 #' @importFrom R6 R6Class
 #' @importFrom yaml read_yaml write_yaml
 #' @importFrom futile.logger flog.threshold flog.info
+#' @importFrom data.table data.table := rbindlist
+#' @importFrom tibble as_tibble
 #' @export
 #' @keywords data
 #' @return Object of \code{\link{R6Class}} with methods for caching objects
@@ -76,11 +78,34 @@ cachemer <- R6::R6Class(
       else
         self$count <- self$count + 1
     },
-    summary = function() {
-
-      cat("path:", self$path, "\n")
-      cat("created at:", as.character(self$created_at), "\n")
-      cat("count:", self$count, "\n")
+    summary = function(output.class = "tbl") {
+      
+      stopifnot(output.class %in% c("data.table", "tbl", "tbl_df"))
+      
+      cached.obj <- private$shared$cache
+      
+      dt <- data.table::data.table()
+      
+      for (i in 1:length(cached.obj)) {
+        
+        el <- cached.obj[[i]]
+        
+        dt.from.list <- data.table::data.table(
+          id = el$hash,
+          output = el$output,
+          arguments = as.list(list(el$arguments), all.names = TRUE),
+          fun_name_hash = el$hashes$fun.name,
+          fun_body_hash = el$hashes$fun.body,
+          fun_args_hash = el$hashes$arguments
+        )
+        
+        dt <- data.table::rbindlist(list(dt, dt.from.list))
+      }
+      
+      if (output.class == "data.table")
+        dt
+      else
+        tibble::as_tibble(dt)
     },
     clear = function(all = FALSE) {
       flog.info("Clearing cache", name = private$shared$logger$name)

@@ -15,7 +15,9 @@ Imports:
   magrittr,
   digest,
   yaml,
-  methods
+  methods,
+  data.table,
+  tibble
 Suggests:
   hexSticker,
   testthat,
