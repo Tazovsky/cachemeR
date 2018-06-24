@@ -75,7 +75,8 @@ split_chain <- function(x, env) {
       res[["pipes"]][[idx]] <- el
     } else if (is_function(el, env)) {
       idx <- length(res[["functions"]]) + 1L
-      res[["functions"]][[idx]] <- list(name = el)
+      fbody <- get(as.character(el), envir = env)
+      res[["functions"]][[idx]] <- list(name = el, body = fbody)
     } else if (is.numeric(el)) {
       idx <- length(res[["values"]]) + 1L
       res[["values"]][[idx]] <- el
