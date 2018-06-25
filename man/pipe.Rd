@@ -10,6 +10,8 @@ x \%c-\% value
 \item{x}{variable to assign output from `value`}
 
 \item{value}{to be assigned to `x`}
+
+\item{env}{environment}
 }
 \description{
 cacheR pipe operator

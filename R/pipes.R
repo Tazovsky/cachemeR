@@ -3,40 +3,41 @@
 #' cacheR pipe operator
 #'
 #' @param x variable to assign output from `value`
+#' @param env environment
 #' @param value to be assigned to `x`
+#'
 #' @export
 #' @importFrom methods functionBody
 #' @rdname pipe
-`%c-%` <- function(x, value) {
+`%c-%` <- function(x, value, env = parent.frame()) {
   target <- substitute(x)
   expr <- substitute(value)
-  envir <- parent.frame(1)
   fun.name <- as.character(expr)[1]
   chain <- match.call()
   
   if (!is.call(chain[[3]]))
     stop("RHS is not a function. If assigning value, please use `<-` operator.")
   
-  fun <- get(fun.name, envir = envir)
+  fun <- get(fun.name, envir = env)
   if (!is.function(fun))
     stop("Supports functions caching only.")
 
   if (fun.name == "$")
     stop("Extraction with `$` is not supported on RHS.")
   
-  value.args <- getArgs(value = expr, eval.calls = TRUE)
+  value.args <- getArgs(value = expr, eval.calls = TRUE, env = env)
   cache <- cachemerRef$new()
   cache$cacheme(
     fun.name = fun.name,
     fun.body = methods::functionBody(fun),
     arguments = value.args,
     output = expr,
-    envir =  envir
+    envir =  env
   )
 
   result <- cache$lastCache$output
 
-  eval(call("<-", target, result), envir, envir)
+  eval(call("<-", target, result), env, env)
 }
 
 
@@ -54,7 +55,6 @@ if (FALSE) {
     res.cached %c-% doLm(rows = 5000, cols = 1000),
     times = 30L
   )
-
 
   testthat::expect_equal(res, res.cached)
 }

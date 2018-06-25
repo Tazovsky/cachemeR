@@ -249,9 +249,6 @@ testthat::test_that("setLogger method", {
 testthat::test_that("file is not yaml, does not exist, etc", {
   
   tmp.dir <- tempfile()
-  on.exit(unlink(tmp.dir, TRUE, TRUE))
-  
-  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
   
   testthat::expect_true(file.exists(file.path(tmp.dir, "config.yaml")))
   
@@ -272,6 +269,47 @@ testthat::test_that("file is not yaml, does not exist, etc", {
   
   testthat::expect_error(cache$setLogger(),
                          "'is\\.on' argument is missing")
-  
 })
 
+testthat::test_that("summary method: empty cache", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  cache$clear()
+  
+  testthat::expect_is(cache$summary(), c("tbl_df", "tbl", "data.frame"))
+  testthat::expect_equal(nrow(cache$summary()), 0)
+  testthat::expect_is(cache$summary("data.table"), "data.table")
+  testthat::expect_equal(nrow(cache$summary("data.table")), 0)
+})
+
+testthat::test_that("summary method", {
+  
+  testthat::skip_if(Sys.getenv("TRAVIS") == TRUE)
+  
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  cache$clear()
+  
+  for (i in 1:22)
+    res %c-% testFun(a = 1:22, b = i, c = list(d = i / 2, e = i/3))
+  
+  testthat::expect_equal(
+    cache$summary(),
+    readRDS(system.file("testdata", "summary_tbl.RDS", package = "cachemeR")))
+  
+  testthat::expect_equal(
+    cache$summary("data.table"),
+    readRDS(system.file("testdata", "summary_dt.RDS", package = "cachemeR")))
+  
+  # recreate reference objects
+  if (FALSE) {
+    saveRDS(cache$summary(), file = "inst/testdata/summary_tbl.RDS")
+    saveRDS(cache$summary("data.table"), file = "inst/testdata/summary_dt.RDS")
+  }
+  
+})
