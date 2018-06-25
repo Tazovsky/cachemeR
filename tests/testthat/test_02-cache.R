@@ -249,6 +249,8 @@ testthat::test_that("setLogger method", {
 
 testthat::test_that("summary method", {
   
+  testthat::skip_if(Sys.getenv("TRAVIS") == TRUE)
+  
   dir.create(tmp.dir <- tempfile())
   on.exit(unlink(tmp.dir, TRUE, TRUE))
   
