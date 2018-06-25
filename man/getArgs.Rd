@@ -4,12 +4,14 @@
 \alias{getArgs}
 \title{getArgs}
 \usage{
-getArgs(value, eval.calls = TRUE)
+getArgs(value, eval.calls = TRUE, env = parent.frame())
 }
 \arguments{
 \item{value}{function call}
 
 \item{eval.calls}{logical}
+
+\item{env}{environment}
 }
 \value{
 list

@@ -3,6 +3,7 @@
 #'
 #' @param value function call
 #' @param eval.calls logical
+#' @param env environment
 #'
 #' @return list
 #' @export
@@ -13,11 +14,8 @@
 #' }
 #' getArgs(testFun())
 #' }
-getArgs <- function(value, eval.calls = TRUE) {
+getArgs <- function(value, eval.calls = TRUE, env = parent.frame()) {
 
-  p.env <- parent.frame(1) # parent envir
-  gp.env <- parent.frame(2) # grandparent envir
-  
   if (inherits(value, "call"))
     qte <- quote(value)
   else
@@ -33,7 +31,7 @@ getArgs <- function(value, eval.calls = TRUE) {
   # check if argument values are named variables
   qte.list <- lapply(qte.list, function(x) {
     if (class(x) == "name") {
-      eval(x, envir = gp.env)
+      eval(x, envir = env)
     } else {
       x
     }
@@ -116,10 +114,10 @@ getArgs <- function(value, eval.calls = TRUE) {
     res <- lapply(res, function(x) {
       if (inherits(x, "call")) {
         
-        if (isListArg(x, envir = gp.env)) {
-          getListArg(x, envir = gp.env)
+        if (isListArg(x, envir = env)) {
+          getListArg(x, envir = env)
         } else {
-          eval(x)
+          eval(x, envir = env)
         }
       } else {
         x
