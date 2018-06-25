@@ -245,3 +245,31 @@ testthat::test_that("setLogger method", {
     NA)
   
 })
+
+testthat::test_that("file is not yaml, does not exist, etc", {
+  
+  tmp.dir <- tempfile()
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  testthat::expect_true(file.exists(file.path(tmp.dir, "config.yaml")))
+  
+  testthat::expect_error(
+    cachemer$new(file.path(tmp.dir, "config.blabla")),
+    "no 'yml' or 'yaml' extension"
+  )
+  
+  cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  testthat::expect_error(
+    cachemer$new(file.path(tmp.dir, "config.yaml"), overwrite = FALSE),
+    "File already exists"
+  )
+  
+  res %c-% testFun()
+  testthat::expect_equal(res, cache$getEnv$last.cache$output)
+  
+  
+})
+
