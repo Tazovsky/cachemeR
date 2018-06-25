@@ -270,6 +270,8 @@ testthat::test_that("file is not yaml, does not exist, etc", {
   res %c-% testFun()
   testthat::expect_equal(res, cache$getEnv$last.cache$output)
   
+  testthat::expect_error(cache$setLogger(),
+                         "'is\\.on' argument is missing")
   
 })
 
