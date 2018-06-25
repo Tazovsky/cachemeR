@@ -271,6 +271,14 @@ testthat::test_that("file is not yaml, does not exist, etc", {
                          "'is\\.on' argument is missing")
 })
 
+testthat::test_that("yaml does not exists", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  yaml.path <- file.path(tmp.dir, "config.yaml")
+  cache <- cachemer$new(yaml.path)
+  file.remove(yaml.path)
+  testthat::expect_error(cachemer$new(), "Yaml file does not exist")
+})
 testthat::test_that("summary method: empty cache", {
   dir.create(tmp.dir <- tempfile())
   on.exit(unlink(tmp.dir, TRUE, TRUE))
