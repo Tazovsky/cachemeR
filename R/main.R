@@ -86,20 +86,27 @@ cachemer <- R6::R6Class(
       
       dt <- data.table::data.table()
       
-      for (i in 1:length(cached.obj)) {
+      if (length(cached.obj) == 0) {
+        flog.info("Cache is empty", name = private$shared$logger$name)
+      } else {
+        flog.info(sprintf("Cache contains %s objects", length(cached.obj)), 
+                  name = private$shared$logger$name)
         
-        el <- cached.obj[[i]]
-        
-        dt.from.list <- data.table::data.table(
-          id = el$hash,
-          output = el$output,
-          arguments = as.list(list(el$arguments), all.names = TRUE),
-          fun_name_hash = el$hashes$fun.name,
-          fun_body_hash = el$hashes$fun.body,
-          fun_args_hash = el$hashes$arguments
-        )
-        
-        dt <- data.table::rbindlist(list(dt, dt.from.list))
+        for (i in 1:length(cached.obj)) {
+          
+          el <- cached.obj[[i]]
+          
+          dt.from.list <- data.table::data.table(
+            id = el$hash,
+            output = el$output,
+            arguments = as.list(list(el$arguments), all.names = TRUE),
+            fun_name_hash = el$hashes$fun.name,
+            fun_body_hash = el$hashes$fun.body,
+            fun_args_hash = el$hashes$arguments
+          )
+          
+          dt <- data.table::rbindlist(list(dt, dt.from.list))
+        }
       }
       
       if (output.class == "data.table")
