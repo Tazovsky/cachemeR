@@ -8,6 +8,9 @@ dist: trusty
 
 warnings_are_errors: false
 
+before_install:
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+
 jobs:
   include:
     - r: 3.4
