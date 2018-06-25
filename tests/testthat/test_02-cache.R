@@ -254,8 +254,10 @@ testthat::test_that("summary method", {
   
   cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
   
-  for (i in 1:20)
-    res %c-% testFun(a = 1:20, b = i, c = list(d = i / 2, e = i/3))
+  cache$clear()
+  
+  for (i in 1:22)
+    res %c-% testFun(a = 1:22, b = i, c = list(d = i / 2, e = i/3))
   
   testthat::expect_equal(
     cache$summary(),
