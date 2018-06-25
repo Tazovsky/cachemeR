@@ -246,11 +246,7 @@ testthat::test_that("setLogger method", {
   
 })
 
-
-testthat::test_that("summary method", {
-  
-  testthat::skip_if(Sys.getenv("TRAVIS") == TRUE)
-  
+testthat::test_that("summary method: empty cache", {
   dir.create(tmp.dir <- tempfile())
   on.exit(unlink(tmp.dir, TRUE, TRUE))
   
@@ -262,6 +258,18 @@ testthat::test_that("summary method", {
   testthat::expect_equal(nrow(cache$summary()), 0)
   testthat::expect_is(cache$summary("data.table"), "data.table")
   testthat::expect_equal(nrow(cache$summary("data.table")), 0)
+})
+
+testthat::test_that("summary method", {
+  
+  testthat::skip_if(Sys.getenv("TRAVIS") == TRUE)
+  
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  cache$clear()
   
   for (i in 1:22)
     res %c-% testFun(a = 1:22, b = i, c = list(d = i / 2, e = i/3))
