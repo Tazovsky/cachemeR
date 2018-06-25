@@ -257,9 +257,6 @@ testthat::test_that("summary method", {
   for (i in 1:20)
     res %c-% testFun(a = 1:20, b = i, c = list(d = i / 2, e = i/3))
   
-  # saveRDS(cache$summary(), file = "inst/testdata/summary_tbl.RDS")
-  # saveRDS(cache$summary("data.table"), file = "inst/testdata/summary_dt.RDS")
-  
   testthat::expect_equal(
     cache$summary(),
     readRDS(system.file("testdata", "summary_tbl.RDS", package = "cachemeR")))
@@ -267,5 +264,11 @@ testthat::test_that("summary method", {
   testthat::expect_equal(
     cache$summary("data.table"),
     readRDS(system.file("testdata", "summary_dt.RDS", package = "cachemeR")))
+  
+  # recreate reference objects
+  if (FALSE) {
+    saveRDS(cache$summary(), file = "inst/testdata/summary_tbl.RDS")
+    saveRDS(cache$summary("data.table"), file = "inst/testdata/summary_dt.RDS")
+  }
   
 })
