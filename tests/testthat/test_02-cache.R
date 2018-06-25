@@ -256,6 +256,9 @@ testthat::test_that("summary method", {
   
   cache$clear()
   
+  testthat::expect_is(cache$summary(), c("tbl_df", "tbl", "data.frame"))
+  testthat::expect_equal(nrow(cache$summary()), 0)
+  
   for (i in 1:22)
     res %c-% testFun(a = 1:22, b = i, c = list(d = i / 2, e = i/3))
   
