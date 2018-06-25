@@ -271,7 +271,7 @@ testthat::test_that("file is not yaml, does not exist, etc", {
                          "'is\\.on' argument is missing")
 })
 
-testthat::test_that("yaml does not exists", {
+testthat::test_that("yaml does not exist", {
   dir.create(tmp.dir <- tempfile())
   on.exit(unlink(tmp.dir, TRUE, TRUE))
   yaml.path <- file.path(tmp.dir, "config.yaml")
