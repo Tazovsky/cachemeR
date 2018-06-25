@@ -6,6 +6,8 @@ latex: false
 r_build_args: '--no-build-vignettes'
 dist: trusty
 
+warnings_are_errors: false
+
 jobs:
   include:
     - r: 3.4
