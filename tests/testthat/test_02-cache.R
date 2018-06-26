@@ -321,3 +321,19 @@ testthat::test_that("summary method", {
   }
   
 })
+
+testthat::test_that("share method", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  cache$clear()
+  
+  cache$share("iris", iris)
+  cache2 <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  testthat::expect_identical(cache2$getShared("iris"), iris)
+  
+  cache2$clear()
+  
+  testthat::expect_null(cache2$getShared("iris"))
+})
