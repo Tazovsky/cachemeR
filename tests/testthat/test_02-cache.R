@@ -246,12 +246,44 @@ testthat::test_that("setLogger method", {
   
 })
 
+testthat::test_that("file is not yaml, does not exist, etc", {
+  
+  tmp.dir <- tempfile()
+  
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  testthat::expect_true(file.exists(file.path(tmp.dir, "config.yaml")))
+  
+  testthat::expect_error(
+    cachemer$new(file.path(tmp.dir, "config.blabla")),
+    "no 'yml' or 'yaml' extension"
+  )
+  
+  testthat::expect_error(
+    cachemer$new(file.path(tmp.dir, "config.yaml"), overwrite = FALSE),
+    "File already exists"
+  )
+  
+  res %c-% testFun()
+  testthat::expect_equal(res, cache$getEnv$last.cache$output)
+  
+  testthat::expect_error(cache$setLogger(),
+                         "'is\\.on' argument is missing")
+})
+
+testthat::test_that("yaml does not exist", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  yaml.path <- file.path(tmp.dir, "config.yaml")
+  cache <- cachemer$new(yaml.path)
+  file.remove(yaml.path)
+  testthat::expect_error(cachemer$new(), "Yaml file does not exist")
+})
 testthat::test_that("summary method: empty cache", {
   dir.create(tmp.dir <- tempfile())
   on.exit(unlink(tmp.dir, TRUE, TRUE))
   
   cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
-  
   cache$clear()
   
   testthat::expect_is(cache$summary(), c("tbl_df", "tbl", "data.frame"))
@@ -288,4 +320,20 @@ testthat::test_that("summary method", {
     saveRDS(cache$summary("data.table"), file = "inst/testdata/summary_dt.RDS")
   }
   
+})
+
+testthat::test_that("share method", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  cache <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  cache$clear()
+  
+  cache$share("iris", iris)
+  cache2 <- cachemer$new(file.path(tmp.dir, "config.yaml"))
+  
+  testthat::expect_identical(cache2$getShared("iris"), iris)
+  
+  cache2$clear()
+  
+  testthat::expect_null(cache2$getShared("iris"))
 })

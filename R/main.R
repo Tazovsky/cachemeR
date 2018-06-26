@@ -27,7 +27,6 @@ cachemer <- R6::R6Class(
     path = NULL,
     created_at = NULL,
     overwrite = NULL,
-    count = NULL,
     initialize = function(path, overwrite = TRUE) {
       
       if (private$shared$logger$is.on)
@@ -71,12 +70,6 @@ cachemer <- R6::R6Class(
         stop("Missing 'path' argument")
       }
 
-    },
-    add = function() {
-      if (is.null(self$count))
-        self$count <- 1
-      else
-        self$count <- self$count + 1
     },
     summary = function(output.class = "tbl") {
       
