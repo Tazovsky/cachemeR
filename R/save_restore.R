@@ -123,6 +123,7 @@ restoreCache <-
     
     files <- list.files(path, pattern = paste0(".*", prefix, "_", sufix, ".rds"), full.names = TRUE)
     
-    objects <- future.apply::future_lapply(files, readRDS)
+    restored <- future.apply::future_lapply(files, readRDS)
     
+    restored
   }
