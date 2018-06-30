@@ -8,7 +8,7 @@
 #' @param promises.env 
 #' @param logger.name 
 #'
-#' @importFrom future %<-% resolve resolved futureOf plan
+#' @importFrom future %<-% resolve resolved futureOf plan availableCores
 #'
 #' @return
 #' @export
