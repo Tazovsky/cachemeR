@@ -18,7 +18,8 @@ Imports:
   methods,
   data.table,
   tibble,
-  future
+  future,
+  future.apply
 Suggests:
   hexSticker,
   testthat,

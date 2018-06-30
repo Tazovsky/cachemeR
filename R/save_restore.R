@@ -84,6 +84,45 @@ if (FALSE) {
   promises.env <- new.env()
   var <- list(a = 1, b = 2, c = list(e=2, 241234))
   debugonce(saveCache)
-  res <- saveCache(var, path = "dev/", promises.env = promises.env)
+  res <- saveCache(var, path = "dev/cache/", promises.env = promises.env)
   
 }
+
+
+#' restoreCache
+#'
+#' @param path 
+#' @param sufix 
+#' @param prefix 
+#' @param plan 
+#' @param workers 
+#' @param logger.name 
+#' @param future.plan 
+#' 
+#' @importFrom future.apply future_lapply
+#' @importFrom future plan
+#' 
+#' @return
+#' @export
+#'
+restoreCache <-
+  function(path,
+           sufix,
+           prefix = "cachemer",
+           plan = "multiprocess",
+           workers = future::availableCores() - 1,
+           logger.name = "test.logger",
+           future.plan = "multiprocess") {
+    
+    stopifnot(!missing(path))
+    
+    if (missing(sufix))
+      sufix <- ".*"
+    
+    future::plan(future.plan)
+    
+    files <- list.files(path, pattern = paste0(".*", prefix, "_", sufix, ".rds"), full.names = TRUE)
+    
+    objects <- future.apply::future_lapply(files, readRDS)
+    
+  }
