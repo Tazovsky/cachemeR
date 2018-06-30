@@ -187,8 +187,10 @@ cachemer$set("public", "cacheme", function(fun.name,
     fun.body = digest::digest(fun.body, algo),
     arguments = digest::digest(arguments, algo)
   )
-
+  
   obj2cache <- list(
+    fun.name = fun.name,
+    fun.body = fun.body,
     arguments = arguments,
     hashes = hashes,
     # pass output only when it is clear that
