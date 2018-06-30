@@ -32,6 +32,8 @@ saveCache <-
     if (missing(sufix))
       sufix <- as.numeric(Sys.time())
     
+    plan(future.plan)
+    
     fname <- paste0(prefix, "_", sufix, ".rds")
     
     stopifnot(!file.exists(file.path(path, fname)))
