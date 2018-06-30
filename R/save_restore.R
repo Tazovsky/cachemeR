@@ -148,8 +148,6 @@ if (FALSE) {
     config.file <- file.path(tmp.dir, "config.yaml")
     cache <- cachemer$new(path = config.file)
     
-    list.files(tmp.dir)
-    
     res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
     res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
     res3 %c-% testFun(1:23, b = 3, list(d = 2, e = 3))
