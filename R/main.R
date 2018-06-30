@@ -25,6 +25,7 @@ cachemer <- R6::R6Class(
   "cacher",
   public = list(
     path = NULL,
+    dirname = NULL,
     created_at = NULL,
     overwrite = NULL,
     initialize = function(path, overwrite = TRUE) {
@@ -53,9 +54,12 @@ cachemer <- R6::R6Class(
           created_at_ts = as.character(as.integer(created_at))
         ), file = path)
 
-
         self$path <- path
+        self$dirname <- dirname(path)
+        
         private$shared$path <- path
+        private$shared$dirname <- dirname(path)
+        
         self$overwrite <- overwrite
         self$created_at <- created_at
       } else if (!is.null(private$shared$path)) {
@@ -121,9 +125,15 @@ cachemer <- R6::R6Class(
       e <- new.env()
       e$envir <- e
       e$path <- NULL
+      e$dirname <- NULL
       e$cache <- NULL
       e$last.cache <- NULL
       e$logger <- list(name = "cachemer.logger", is.on = FALSE)
+      e$save.options <- list(
+        prefix = "cachemer",
+        plan = "multiprocess",
+        env = new.env()
+      )
       e
     }
   ),
@@ -207,6 +217,17 @@ cachemer$set("public", "cacheme", function(fun.name,
               name = private$shared$logger$name)
 
     obj2cache$output <- evalOutput(output, envir = envir)
+    obj2cache$ts <- as.numeric(Sys.time())
+    
+    # save cache to file
+    saveCache(
+      x = obj2cache,
+      prefix = private$shared$save.options$prefix,
+      path = private$shared$dirname,
+      promises.env = private$shared$save.options$env,
+      future.plan = private$shared$save.options$plan,
+      logger.name = private$shared$logger$name
+    )
     
     private$shared$cache[[obj2cache$hash]] <- obj2cache
 

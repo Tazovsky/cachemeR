@@ -104,7 +104,7 @@ if (FALSE) {
 #' 
 #' @return
 #' @export
-#'
+#' @rdname restoreCache
 restoreCache <-
   function(path,
            sufix,
@@ -121,9 +121,58 @@ restoreCache <-
     
     future::plan(future.plan)
     
-    files <- list.files(path, pattern = paste0(".*", prefix, "_", sufix, ".rds"), full.names = TRUE)
+    files <- list.files(path,
+                        pattern = getPattern(prefix, sufix),
+                        full.names = TRUE)
     
-    restored <- future.apply::future_lapply(files, readRDS)
+    flog.debug(sprintf("Restoring cache from: %s", path))
     
-    restored
+    cache.restored <- future.apply::future_lapply(files, readRDS)
+    
+    nms <- sapply(cache.restored, function(el) el$hash)
+    
+    names(cache.restored) <- nms    
+    
+    return(cache.restored)
   }
+
+if (FALSE) {
+  
+  res <- restoreCache("dev/cache/file12c8332ecd202/")
+  
+  testthat::context("restoreCache")
+  
+  testthat::test_that("restoreCache: returned object", {
+    dir.create(tmp.dir <- tempfile())
+    on.exit(unlink(tmp.dir, TRUE, TRUE))
+    config.file <- file.path(tmp.dir, "config.yaml")
+    cache <- cachemer$new(path = config.file)
+    
+    list.files(tmp.dir)
+    
+    res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
+    res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
+    res3 %c-% testFun(1:23, b = 3, list(d = 2, e = 3))
+    
+    restored <- restoreCache(tmp.dir)
+    
+    testthat::expect_equal(
+      names(restored), 
+      as.vector(sapply(restored, function(x) x$hash))
+    )
+  })
+  
+}
+
+#' getPattern
+#'
+#' @param prefix 
+#' @param sufix 
+#'
+#' @return string
+#' @export
+#'
+#' @rdname restoreCache
+getPattern <- function(prefix, sufix = ".*") {
+  paste0(".*", prefix, "_", sufix, ".rds")
+}
