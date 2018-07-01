@@ -7,6 +7,13 @@
 #' @param workers 
 #' @param promises.env 
 #' @param logger.name 
+#' @param path 
+#' @param sufix 
+#' @param force.eval logical (default \code{FALSE}); if \code{FALSE} then
+#' queue and evaluate saving process in separate process - else wait until
+#' saving process is finished
+#' @param prefix 
+#' @param future.plan 
 #'
 #' @importFrom future %<-% resolve resolved futureOf plan availableCores
 #'
@@ -18,13 +25,13 @@ saveCache <-
            path,
            promises.env,
            sufix,
+           force.eval = FALSE,
            prefix = "cachemer",
            plan = "multiprocess",
            workers = future::availableCores() - 1,
            logger.name = "test.logger",
            future.plan = "multiprocess") {
     
-    # stopifnot(!missing(x))
     stopifnot(!missing(x))
     stopifnot(!missing(path))
     stopifnot(!missing(promises.env))
@@ -38,44 +45,50 @@ saveCache <-
     
     stopifnot(!file.exists(file.path(path, fname)))
     
-    # quote regarding to saving cache to file
-    promises.env$fname <- fname
-    promises.env$path <- path
-    promises.env$x <- x
-    
-    qt <- quote({
-      fresult %<-% {
-        saveRDS(x, file = file.path(path, fname))
-      }
-    })
-    
-    # future of future variable
-    fof <- tryCatch({
-      future::futureOf(promises.env$fresult)
-    }, error = function(e) {
-      flog.debug("'fresult' does not exists", name = logger.name)
-      NULL
-    })
-    
-    if (is.null(fof)) {
-      # if does not exists then procees and create
-      flog.debug("Evaluating promise...", name = logger.name)
-      eval(qt, envir = promises.env)
-      FALSE
+    if (force.eval) {
+      saveRDS(x, file = file.path(path, fname))
+      TRUE
     } else {
-      # exists so if not resolved then wait
-      fof <- future::futureOf(promises.env$fresult)
       
-      if (!future::resolved(fof)) {
-        flog.debug("Wait until previous process is finished...",
-                   name = logger.name)
-        future::resolve(fof)
-        flog.debug("Done", name = logger.name)
-        TRUE
-      } else {
+      # quote regarding to saving cache to file
+      promises.env$fname <- fname
+      promises.env$path <- path
+      promises.env$x <- x
+      
+      qt <- quote({
+        fresult %<-% {
+          saveRDS(x, file = file.path(path, fname))
+        }
+      })
+      
+      # future of future variable
+      fof <- tryCatch({
+        future::futureOf(promises.env$fresult)
+      }, error = function(e) {
+        flog.debug("'fresult' does not exists", name = logger.name)
+        NULL
+      })
+      
+      if (is.null(fof)) {
+        # if does not exists then procees and create
         flog.debug("Evaluating promise...", name = logger.name)
         eval(qt, envir = promises.env)
         FALSE
+      } else {
+        # exists so if not resolved then wait
+        fof <- future::futureOf(promises.env$fresult)
+        
+        if (!future::resolved(fof)) {
+          flog.debug("Wait until previous process is finished...",
+                     name = logger.name)
+          future::resolve(fof)
+          flog.debug("Done", name = logger.name)
+          TRUE
+        } else {
+          flog.debug("Evaluating promise...", name = logger.name)
+          eval(qt, envir = promises.env)
+          FALSE
+        }
       }
     }
   }
@@ -187,7 +200,7 @@ if (FALSE) {
     
     testthat::expect_length(list.files(tmp.dir), 4)
     testthat::expect_null(cache$lastCache)
-      
+    
     # restore session
     cache <- cachemer$new(path = config.file)
     
