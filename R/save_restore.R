@@ -122,13 +122,27 @@ restoreCache <-
                         pattern = getPattern(prefix, sufix),
                         full.names = TRUE)
     
-    flog.debug(sprintf("Restoring cache from: %s", path))
+    flog.debug(sprintf("Restoring cache from: %s", path), name = logger.name)
     
     cache.restored <- future.apply::future_lapply(files, readRDS)
     
     nms <- sapply(cache.restored, function(el) el$hash)
     
     names(cache.restored) <- nms    
+    
+    # look for duplicates and remove them
+    is.dupl <- base::duplicated(names(cache.restored))
+    
+    if (any(is.dupl)) {
+      # get duplicated elements
+      dupl.elem <- names(cache.restored)[is.dupl]
+      flog.debug(sprintf("Removing %s duplicates", length(dupl.elem)),
+                 name = logger.name)
+      # find indexes of dulpicated elements      
+      dupl.idx <- match(dupl.elem, names(cache.restored))
+      # rm duplicated element - highest timestamp (ts) will stay
+      cache.restored <- cache.restored[-dupl.idx]
+    }
     
     return(cache.restored)
   }
@@ -187,8 +201,12 @@ if (FALSE) {
     config.file <- file.path(tmp.dir, "config.yaml")
     cache <- cachemer$new(path = config.file)
     
+    cache$setLogger(TRUE)
+    
     res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
     res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
+    
+    testthat::expect_length(list.files(tmp.dir), 3)
     
     smry <- cache$summary()
     
@@ -199,8 +217,12 @@ if (FALSE) {
     
     list.files(tmp.dir)
     
+    testthat::expect_length(list.files(tmp.dir), 5)
+    
     # restore session
     cache <- cachemer$new(path = config.file)
+    
+    cache$summary()
     
     testthat::expect_equal(cache$summary(), smry)
     
