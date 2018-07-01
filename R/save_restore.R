@@ -107,7 +107,7 @@ if (FALSE) {
 #' @rdname restoreCache
 restoreCache <-
   function(path,
-           sufix,
+           sufix = ".*",
            prefix = "cachemer",
            plan = "multiprocess",
            workers = future::availableCores() - 1,
@@ -115,9 +115,6 @@ restoreCache <-
            future.plan = "multiprocess") {
     
     stopifnot(!missing(path))
-    
-    if (missing(sufix))
-      sufix <- ".*"
     
     future::plan(future.plan)
     
@@ -183,6 +180,32 @@ if (FALSE) {
     testthat::expect_equal(cache$summary(), smry)
     
   })
+  
+  testthat::test_that("saveCache: new cached elements after clear", {
+    dir.create(tmp.dir <- tempfile())
+    on.exit(unlink(tmp.dir, TRUE, TRUE))
+    config.file <- file.path(tmp.dir, "config.yaml")
+    cache <- cachemer$new(path = config.file)
+    
+    res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
+    res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
+    
+    smry <- cache$summary()
+    
+    cache$clear()
+    
+    res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
+    res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
+    
+    list.files(tmp.dir)
+    
+    # restore session
+    cache <- cachemer$new(path = config.file)
+    
+    testthat::expect_equal(cache$summary(), smry)
+    
+  })
+  
 }
 
 #' getPattern
