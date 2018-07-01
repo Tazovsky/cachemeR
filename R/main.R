@@ -114,9 +114,17 @@ cachemer <- R6::R6Class(
     clear = function(all = FALSE) {
       flog.info("Clearing cache", name = private$shared$logger$name)
       obj.names <- names(private$shared)
-      exclude <- if (all) c("envir", "logger") else c("envir", "path", "logger")
+     
+      if (all)
+        exclude <- c("envir", "logger", "save.options")
+      else
+        exclude <- c("envir", "logger", "path", "dirname", "save.options")
+      
       obj.names <- obj.names[!obj.names %in% exclude]
       invisible(lapply(obj.names, function(nm) private$shared[[nm]] <- NULL))
+      
+      # obj2clear <- c("cache", "last.cache")
+      # invisible(lapply(obj2clear, function(nm) private$shared[[nm]] <- NULL))
     }
   ),
   private = list(
