@@ -161,7 +161,8 @@ cachemer <- R6::R6Class(
       e$save.options <- list(
         prefix = "cachemer",
         plan = "multiprocess",
-        env = new.env()
+        env = new.env(),
+        force.eval = FALSE
       )
       e
     }
@@ -194,6 +195,10 @@ cachemer <- R6::R6Class(
         private$shared$logger$is.on <- FALSE
         invisible(flog.threshold(ERROR, name = private$shared$logger$name))
       }
+    },
+    setForceEval = function() function(lgc) {
+      flog.info(sprintf("force.eval set to %s", lgc), name = private$shared$logger$name)
+      private$shared$save.options$force.eval <- lgc
     }
   )
 )
@@ -255,7 +260,8 @@ cachemer$set("public", "cacheme", function(fun.name,
       path = private$shared$dirname,
       promises.env = private$shared$save.options$env,
       future.plan = private$shared$save.options$plan,
-      logger.name = private$shared$logger$name
+      logger.name = private$shared$logger$name,
+      force.eval = private$shared$save.options$force.eval
     )
     
     private$shared$cache[[obj2cache$hash]] <- obj2cache

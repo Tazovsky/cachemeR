@@ -16,7 +16,7 @@
 #' @param future.plan 
 #'
 #' @importFrom future %<-% resolve resolved futureOf plan availableCores
-#'
+#' @import futile.logger flog.debug
 #' @return
 #' @export
 #'
@@ -46,6 +46,8 @@ saveCache <-
     stopifnot(!file.exists(file.path(path, fname)))
     
     if (force.eval) {
+      flog.debug("Saving file...", name = logger.name)
+      print(">>>>>>>>>>>> Saving file...")
       saveRDS(x, file = file.path(path, fname))
       TRUE
     } else {
@@ -159,89 +161,6 @@ restoreCache <-
     
     return(cache.restored)
   }
-
-if (FALSE) {
-  
-  res <- restoreCache("dev/cache/file12c8332ecd202/")
-  
-  testthat::context("restoreCache")
-  
-  testthat::test_that("restoreCache: returned object", {
-    dir.create(tmp.dir <- tempfile())
-    on.exit(unlink(tmp.dir, TRUE, TRUE))
-    config.file <- file.path(tmp.dir, "config.yaml")
-    cache <- cachemer$new(path = config.file)
-    
-    res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
-    res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
-    res3 %c-% testFun(1:23, b = 3, list(d = 2, e = 3))
-    
-    restored <- restoreCache(tmp.dir)
-    
-    testthat::expect_equal(
-      names(restored), 
-      as.vector(sapply(restored, function(x) x$hash))
-    )
-  })
-  
-  testthat::test_that("saveCache: restore session", {
-    dir.create(tmp.dir <- tempfile())
-    on.exit(unlink(tmp.dir, TRUE, TRUE))
-    config.file <- file.path(tmp.dir, "config.yaml")
-    cache <- cachemer$new(path = config.file)
-    
-    res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
-    res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
-    res3 %c-% testFun(1:23, b = 3, list(d = 2, e = 3))
-    
-    smry <- cache$summary()
-    
-    cache$clear()
-    
-    testthat::expect_length(list.files(tmp.dir), 4)
-    testthat::expect_null(cache$lastCache)
-    
-    # restore session
-    cache <- cachemer$new(path = config.file)
-    
-    testthat::expect_equal(cache$summary(), smry)
-    
-  })
-  
-  testthat::test_that("saveCache: new cached elements after clear", {
-    dir.create(tmp.dir <- tempfile())
-    on.exit(unlink(tmp.dir, TRUE, TRUE))
-    config.file <- file.path(tmp.dir, "config.yaml")
-    cache <- cachemer$new(path = config.file)
-    
-    cache$setLogger(TRUE)
-    
-    res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
-    res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
-    
-    testthat::expect_length(list.files(tmp.dir), 3)
-    
-    smry <- cache$summary()
-    
-    cache$clear()
-    
-    res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
-    res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
-    
-    list.files(tmp.dir)
-    
-    testthat::expect_length(list.files(tmp.dir), 5)
-    
-    # restore session
-    cache <- cachemer$new(path = config.file)
-    
-    cache$summary()
-    
-    testthat::expect_equal(cache$summary(), smry)
-    
-  })
-  
-}
 
 #' getPattern
 #'
