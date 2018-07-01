@@ -29,6 +29,10 @@ testthat::test_that("saveCache: arguments", {
   
   saveCache(var, path = tmp.dir, sufix = "sufix", promises.env = env)
   
+  # 2nd save is to force evaluate promise
+  saveCache(var, path = tmp.dir, sufix = "sufix", promises.env = env)
+  
+  # 3rd is to catch error because we are sure file already exists after 2nd step
   testthat::expect_error(
     saveCache(var, path = tmp.dir, sufix = "sufix", promises.env = env),
     "!file.exists\\(file.path\\(path, fname\\)\\) is not TRUE"

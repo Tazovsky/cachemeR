@@ -84,6 +84,93 @@ if (FALSE) {
   promises.env <- new.env()
   var <- list(a = 1, b = 2, c = list(e=2, 241234))
   debugonce(saveCache)
-  res <- saveCache(var, path = "dev/", promises.env = promises.env)
+  res <- saveCache(var, path = "dev/cache/", promises.env = promises.env)
   
+}
+
+
+#' restoreCache
+#'
+#' @param path 
+#' @param sufix 
+#' @param prefix 
+#' @param plan 
+#' @param workers 
+#' @param logger.name 
+#' @param future.plan 
+#' 
+#' @importFrom future.apply future_lapply
+#' @importFrom future plan
+#' 
+#' @return
+#' @export
+#' @rdname restoreCache
+restoreCache <-
+  function(path,
+           sufix,
+           prefix = "cachemer",
+           plan = "multiprocess",
+           workers = future::availableCores() - 1,
+           logger.name = "test.logger",
+           future.plan = "multiprocess") {
+    
+    stopifnot(!missing(path))
+    
+    if (missing(sufix))
+      sufix <- ".*"
+    
+    future::plan(future.plan)
+    
+    files <- list.files(path,
+                        pattern = getPattern(prefix, sufix),
+                        full.names = TRUE)
+    
+    flog.debug(sprintf("Restoring cache from: %s", path))
+    
+    cache.restored <- future.apply::future_lapply(files, readRDS)
+    
+    nms <- sapply(cache.restored, function(el) el$hash)
+    
+    names(cache.restored) <- nms    
+    
+    return(cache.restored)
+  }
+
+if (FALSE) {
+  
+  res <- restoreCache("dev/cache/file12c8332ecd202/")
+  
+  testthat::context("restoreCache")
+  
+  testthat::test_that("restoreCache: returned object", {
+    dir.create(tmp.dir <- tempfile())
+    on.exit(unlink(tmp.dir, TRUE, TRUE))
+    config.file <- file.path(tmp.dir, "config.yaml")
+    cache <- cachemer$new(path = config.file)
+    
+    res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
+    res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
+    res3 %c-% testFun(1:23, b = 3, list(d = 2, e = 3))
+    
+    restored <- restoreCache(tmp.dir)
+    
+    testthat::expect_equal(
+      names(restored), 
+      as.vector(sapply(restored, function(x) x$hash))
+    )
+  })
+  
+}
+
+#' getPattern
+#'
+#' @param prefix 
+#' @param sufix 
+#'
+#' @return string
+#' @export
+#'
+#' @rdname restoreCache
+getPattern <- function(prefix, sufix = ".*") {
+  paste0(".*", prefix, "_", sufix, ".rds")
 }
