@@ -36,7 +36,28 @@ cachemer <- R6::R6Class(
         flog.threshold(ERROR, name = private$shared$logger$name)
       
       
-      if (!missing(path) && !is.null(path)) {
+      if (!missing(path) && file.exists(path) &&
+          length(list.files(
+            dirname(path),
+            pattern = getPattern(private$shared$save.options$prefix, ".*")
+          )) > 0) {
+        
+        restored.cache <- restoreCache(dirname(path))
+        private$shared$cache <- restored.cache
+        
+        flog.info(sprintf("Restored cache (%s) elements", length(restored.cache)),
+                  name = private$shared$logger$name)
+        
+        self$path <- path
+        self$dirname <- dirname(path)
+        
+        private$shared$path <- path
+        private$shared$dirname <- dirname(path)
+        
+        self$overwrite <- overwrite
+        self$created_at <- Sys.time()
+        
+      } else if (!missing(path) && !is.null(path)) {
         
         if (!grepl(".*\\.yaml$|.*\\.yml$", path))
           stop("File has no 'yml' or 'yaml' extension.")
