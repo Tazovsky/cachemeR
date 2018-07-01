@@ -170,14 +170,17 @@ if (FALSE) {
     res2 %c-% testFun(1:23, b = 2, list(d = 2, e = 3))
     res3 %c-% testFun(1:23, b = 3, list(d = 2, e = 3))
     
+    smry <- cache$summary()
+    
     cache$clear()
     
-    list.files(tmp.dir)
-    
+    testthat::expect_length(list.files(tmp.dir), 4)
+    testthat::expect_null(cache$lastCache)
+      
     # restore session
     cache <- cachemer$new(path = config.file)
     
-    cache$lastCache
+    testthat::expect_equal(cache$summary(), smry)
     
   })
 }
