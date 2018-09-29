@@ -35,7 +35,6 @@ cachemer <- R6::R6Class(
       else
         flog.threshold(ERROR, name = private$shared$logger$name)
       
-      
       if (!missing(path) && file.exists(path) &&
           length(list.files(
             dirname(path),
@@ -64,6 +63,14 @@ cachemer <- R6::R6Class(
         
         if (overwrite == FALSE && file.exists(path))
           stop("File already exists. Please set 'overwrite' parameter to overwrite.")
+        
+        
+        # case when
+        if (!is.null(private$shared$cache)) {
+          flog.info("Clearing leftovers in cache", name = private$shared$logger$name)
+          private$shared$cache <- NULL
+        }
+        
         
         created_at <- Sys.time()
         
@@ -140,6 +147,7 @@ cachemer <- R6::R6Class(
         exclude <- c("envir", "logger", "save.options")
       else
         exclude <- c("envir", "logger", "path", "dirname", "save.options")
+      
       
       obj.names <- obj.names[!obj.names %in% exclude]
       invisible(lapply(obj.names, function(nm) private$shared[[nm]] <- NULL))
