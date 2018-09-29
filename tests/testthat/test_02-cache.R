@@ -58,6 +58,30 @@ testthat::test_that("test output: all args are unnamed", {
   testthat::expect_equal(ref.res4, res4)
 })
 
+testthat::test_that("test output: different ways to pass variables", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  config.file <- file.path(tmp.dir, "config.yaml")
+  cache <- cachemer$new(path = config.file)
+  
+  arg <- list(d = 3, e = 5)
+  
+  testthat::expect_error(x %c-% testFun(a = 1:20, b = 0, c = arg[["e"]]),
+                         "\\$ operator is invalid for atomic vectors")
+  
+  arg <- list(d = 3, e = 55)
+  z.ref <- testFun(a = 1:20, b = 0, c = arg)
+  z %c-% testFun(a = 1:20, b = 0, c = arg)
+  testthat::expect_equal(z, z.ref)
+  
+  e <- 56
+  arg <- list(d = 3, e = e)
+  y.ref <- testFun(a = 1:20, b = 0, c = arg)
+  y %c-% testFun(a = 1:20, b = 0, c = arg)
+  testthat::expect_equal(y.ref, y)
+})
+
+
 testthat::context("test R6 object and methods")
 
 testthat::test_that("method: lastCache", {
