@@ -30,6 +30,4 @@ model
 }
 \description{
 Test function
-
-doLm
 }

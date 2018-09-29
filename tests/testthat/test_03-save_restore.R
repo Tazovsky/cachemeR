@@ -70,7 +70,7 @@ testthat::test_that("saveCache: restore session", {
   config.file <- file.path(tmp.dir, "config.yaml")
   cache <- cachemer$new(path = config.file)
   
-  # cache$setLogger(TRUE)
+  cache$setLogger(TRUE)
   
   # when saving in separate process sometimes rds files may be saved 
   # with delay - I want to avoid it in tests
@@ -83,7 +83,6 @@ testthat::test_that("saveCache: restore session", {
   smry <- cache$summary()
   
   cache$clear()
-  browser()
   testthat::expect_length(list.files(tmp.dir), 4)
   testthat::expect_null(cache$lastCache)
   

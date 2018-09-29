@@ -16,7 +16,7 @@
 #' @param future.plan 
 #'
 #' @importFrom future %<-% resolve resolved futureOf plan availableCores
-#' @import futile.logger flog.debug
+#' @importFrom futile.logger flog.debug
 #' @return
 #' @export
 #'
@@ -47,8 +47,9 @@ saveCache <-
     
     if (force.eval) {
       flog.debug("Saving file...", name = logger.name)
-      print(">>>>>>>>>>>> Saving file...")
-      saveRDS(x, file = file.path(path, fname))
+      target <- file.path(path, fname)
+      print(sprintf(">>>>>>>>>>>> Saving file: %s", target))
+      saveRDS(x, file = target)
       TRUE
     } else {
       
@@ -98,7 +99,7 @@ saveCache <-
 if (FALSE) {
   promises.env <- new.env()
   var <- list(a = 1, b = 2, c = list(e=2, 241234))
-  debugonce(saveCache)
+  # debugonce(saveCache)
   res <- saveCache(var, path = "dev/cache/", promises.env = promises.env)
   
 }

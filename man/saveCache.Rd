@@ -4,20 +4,33 @@
 \alias{saveCache}
 \title{saveCache}
 \usage{
-saveCache(x, path, promises.env, sufix, prefix = "cachemer",
-  plan = "multiprocess", workers = future::availableCores() - 1,
-  logger.name = "test.logger", future.plan = "multiprocess")
+saveCache(x, path, promises.env, sufix, force.eval = FALSE,
+  prefix = "cachemer", plan = "multiprocess",
+  workers = future::availableCores() - 1, logger.name = "test.logger",
+  future.plan = "multiprocess")
 }
 \arguments{
 \item{x}{}
 
+\item{path}{}
+
 \item{promises.env}{}
+
+\item{sufix}{}
+
+\item{force.eval}{logical (default \code{FALSE}); if \code{FALSE} then
+queue and evaluate saving process in separate process - else wait until
+saving process is finished}
+
+\item{prefix}{}
 
 \item{plan}{}
 
 \item{workers}{}
 
 \item{logger.name}{}
+
+\item{future.plan}{}
 }
 \description{
 Save object to rds
