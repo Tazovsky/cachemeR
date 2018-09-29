@@ -17,7 +17,7 @@
 #'
 #' @importFrom future %<-% resolve resolved futureOf plan availableCores
 #' @importFrom futile.logger flog.debug
-#' @return
+#' @return logical
 #' @export
 #'
 saveCache <-
@@ -48,7 +48,7 @@ saveCache <-
     if (force.eval) {
       flog.debug("Saving file...", name = logger.name)
       target <- file.path(path, fname)
-      print(sprintf(">>>>>>>>>>>> Saving file: %s", target))
+      # print(sprintf(">>> Saving file: %s", target))
       saveRDS(x, file = target)
       TRUE
     } else {
@@ -118,7 +118,7 @@ if (FALSE) {
 #' @importFrom future.apply future_lapply
 #' @importFrom future plan
 #' 
-#' @return
+#' @return list
 #' @export
 #' @rdname restoreCache
 restoreCache <-
@@ -154,7 +154,7 @@ restoreCache <-
       dupl.elem <- names(cache.restored)[is.dupl]
       flog.debug(sprintf("Removing %s duplicates", length(dupl.elem)),
                  name = logger.name)
-      # find indexes of dulpicated elements      
+      # find indexes of dulpicated elements
       dupl.idx <- match(dupl.elem, names(cache.restored))
       # rm duplicated element - highest timestamp (ts) will stay
       cache.restored <- cache.restored[-dupl.idx]
