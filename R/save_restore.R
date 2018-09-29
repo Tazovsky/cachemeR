@@ -67,7 +67,7 @@ saveCache <-
       fof <- tryCatch({
         future::futureOf(promises.env$fresult)
       }, error = function(e) {
-        flog.debug("'fresult' does not exists", name = logger.name)
+        flog.debug("'fresult' does not exist", name = logger.name)
         NULL
       })
       
