@@ -48,7 +48,6 @@ saveCache <-
     if (force.eval) {
       flog.debug("Saving file...", name = logger.name)
       target <- file.path(path, fname)
-      # print(sprintf(">>> Saving file: %s", target))
       saveRDS(x, file = target)
       TRUE
     } else {
@@ -85,7 +84,7 @@ saveCache <-
           flog.debug("Wait until previous process is finished...",
                      name = logger.name)
           future::resolve(fof)
-          flog.debug("Done", name = logger.name)
+          flog.debug("Resolved.", name = logger.name)
           TRUE
         } else {
           flog.debug("Evaluating promise...", name = logger.name)
