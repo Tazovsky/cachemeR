@@ -32,6 +32,9 @@ saving process is finished}
 
 \item{future.plan}{}
 }
+\value{
+logical
+}
 \description{
 Save object to rds
 }
