@@ -44,3 +44,37 @@ doLm <- function(rows, cols) {
   y <- runif(1) + X %*% b + rnorm(rows)
   model <- lm(y ~ X)
 }
+
+#' calculateFibonacci
+#'
+#' @param nterms integer
+#'
+#' @return vector
+#' @export
+#' @rdname test-functions
+calculateFibonacci <-  function(nterms) {
+  n1 = 0
+  n2 = 1
+  count = 2
+  # check if the number of terms is valid
+  res <- c()
+  
+  if(nterms <= 0) {
+    stop("Plese enter a positive integer")
+  } else {
+    if(nterms == 1) {
+      n1
+    } else {
+      while(count < nterms) {
+        nth = n1 + n2
+        res <- c(res, nth)
+        # update values
+        n1 = n2
+        n2 = nth
+        count = count + 1
+      }
+    }
+  }
+  res
+}
+

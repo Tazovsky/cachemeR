@@ -3,6 +3,7 @@
 export("%c-%")
 export(cachemer)
 export(cachemerRef)
+export(calculateFibonacci)
 export(doLm)
 export(evalOutput)
 export(getArgs)

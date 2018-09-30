@@ -4,6 +4,7 @@
 \alias{testFun}
 \alias{testFun2}
 \alias{doLm}
+\alias{calculateFibonacci}
 \title{testFun}
 \usage{
 testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
@@ -11,6 +12,8 @@ testFun(a = 1:20, b = 0, c = list(d = 3, e = 5))
 testFun2()
 
 doLm(rows, cols)
+
+calculateFibonacci(nterms)
 }
 \arguments{
 \item{a}{numeric vector}
@@ -22,11 +25,15 @@ doLm(rows, cols)
 \item{rows}{integer}
 
 \item{cols}{integer}
+
+\item{nterms}{integer}
 }
 \value{
 numeric
 
 model
+
+vector
 }
 \description{
 Test function
