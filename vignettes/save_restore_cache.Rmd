@@ -1,0 +1,76 @@
+---
+title: "Save nad restore cache"
+author: "Kamil Foltyński"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = ">"
+)
+```
+
+## How caching work in `cachemeR` package
+
+Cached objects are stored in provided location as `.rds`:
+
+```{r}
+library(cachemeR)
+
+# create cache location
+dir.create(cache.dir <- tempfile())
+config.file <- file.path(cache.dir, "config.yaml")
+print(config.file)
+cache <- cachemer$new(path = config.file)
+
+cache$setLogger(TRUE)
+
+start.t <- Sys.time()
+res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
+res2 %c-% testFun(1:50, b = 2, list(d = 4, e = 5))
+fib %c-% calculateFibonacci(50000)
+t1 <- Sys.time() - start.t
+t1
+
+# list cached objects:
+list.files(cache.dir)
+
+cache$clear()
+
+```
+
+After you restart `R` session, run `cache$clear()` or clear environment you can easily restore cached objects 
+by providing path to `config.yaml`:
+
+```{r}
+library(cachemeR)
+
+print(config.file)
+
+# list cached objects:
+list.files(cache.dir)
+
+cache <- cachemer$new(path = config.file)
+
+start.t <- Sys.time()
+res1 %c-% testFun(1:23, b = 1, list(d = 2, e = 3))
+res2 %c-% testFun(1:50, b = 2, list(d = 4, e = 5))
+fib %c-% calculateFibonacci(50000)
+t2 <- Sys.time() - start.t
+t2
+
+
+```
+
+
+The first execution of the code lasted **`r round(t1, 4)`** sec(s). 
+The second execution was from cache and took **`r round(t2, 4)`** sec(s) only.
+
+
+
