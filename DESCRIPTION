@@ -24,5 +24,7 @@ Suggests:
   hexSticker,
   testthat,
   knitr,
-  covr
+  covr,
+    rmarkdown
 RoxygenNote: 6.1.0
+VignetteBuilder: knitr
