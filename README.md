@@ -8,9 +8,17 @@
 
 `cachemeR` is a convenient way of caching objects in R. 
 From the beginning the purpose of this package is to make caching as easy as possible 
-and put as less effort as possible to implement it :)
+and to put as less effort as possible to implement it in existsing projects :)
 
 ## Installation
+
+
+``` r
+if (!require("devtools")) 
+  install.packages("devtools")
+
+devtools::install_github("Tazovsky/cachemeR@devel")
+```
 
 ## Usage
 
