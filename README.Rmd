@@ -1,0 +1,96 @@
+# cachemeR
+
+[![Build Status](https://travis-ci.org/Tazovsky/cachemeR.svg?branch=devel)](https://travis-ci.org/Tazovsky/cachemeR)
+[![codecov](https://codecov.io/gh/Tazovsky/cachemeR/branch/devel/graph/badge.svg)](https://codecov.io/gh/Tazovsky/cachemeR)
+[![Coverage Status](https://coveralls.io/repos/github/Tazovsky/cachemeR/badge.svg?branch=devel)](https://coveralls.io/github/Tazovsky/cachemeR?branch=devel)
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = ">"
+)
+```
+
+## Overview {#overview}
+
+`cachemeR` is a convenient way of caching objects in R. 
+From the beginning the purpose of this package is to make caching as easy as possible 
+and to put as less effort as possible to implement it in existsing projects :)
+
+## Installation {#installation}
+
+
+```{r eval=FALSE}
+if (!require("devtools")) 
+  install.packages("devtools")
+
+devtools::install_github("Tazovsky/cachemeR@devel")
+```
+
+## Usage - `%c-%` operator {#usage}
+
+Cache has to be initialized. It requires to run `cachemer$new` with path to `config.yaml`. 
+Then all you need to cache is to use pipe **`%c-%`** instead of assignment operator `<-`. 
+In following example function `doLm` fits linear model:
+
+```{r}
+library(cachemeR)
+
+doLm <- function(rows, cols) {
+  print("Function is run")
+  set.seed(1234)
+  X <- matrix(rnorm(rows*cols), rows, cols)
+  b <- sample(1:cols, cols)
+  y <- runif(1) + X %*% b + rnorm(rows)
+  model <- lm(y ~ X)
+}
+
+# create dir where cache will be stored
+dir.create(tmp.dir <- tempfile())
+
+# create path to config.yaml - yaml fild must be in that dir
+config.file <- file.path(tmp.dir, "config.yaml")
+
+# initialize cachemeR
+cache <- cachemer$new(path = config.file)
+
+cache$setLogger(TRUE)
+
+# cache function
+result1 %c-% doLm(5, 5)
+result1
+
+# function is cached now so if you re-run function then 
+# output will be retrieved from cache instead of executing 'doLm' function again
+result2 %c-% doLm(5, 5)
+result2
+
+```
+
+```{r, include=FALSE}
+on.exit(unlink(dirname(config.file), T, T))
+```
+
+Operator `%c-%` is sesitive to function name, function body, argument (whether argument is named or not, 
+or is list or not, or is declared in parent environment, etc.). But it also **has some [limitations](#limitations)**.
+
+## Use cases {#usecases}
+
+## Limitations {#limitations}
+
+- $ in argument
+- res %c-% fun(a = 1, b =2) + 1
+- res %c-% (fun(a = 1, b =2) + 1)
+- doesn't work with piepi `%>%` 
+
+## Microbenchmark {#microbenchmark}
+
+calc fibonacci
+
+```{r}
+
+# fib5 <- calculateFibonacci(5)
+# fib5 %c-% calculateFibonacci(5)
+
+```
+

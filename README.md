@@ -22,6 +22,21 @@ devtools::install_github("Tazovsky/cachemeR@devel")
 
 ## Usage
 
+Cache has to be initialized. It requires to run `cachemer$new` with path to `config.yaml`:
+
+``` r
+dir.create(tmp.dir <- tempfile())
+on.exit(unlink(tmp.dir, TRUE, TRUE))
+config.file <- file.path(tmp.dir, "config.yaml")
+cache <- cachemer$new(path = config.file)
+```
+
+
+``` r
+doLm <- function(rows, cols)
+
+```
+
 ## Use cases
 
 ## Microbenchmark
