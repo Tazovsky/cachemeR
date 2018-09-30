@@ -70,7 +70,10 @@ t2
 
 
 The first execution of the code lasted **`r round(t1, 4)`** sec(s). 
-The second execution was from cache and took **`r round(t2, 4)`** sec(s) only. You saved a lot of time! :)
+
+The second execution was from cache and took **`r round(t2, 4)`** sec(s) only. 
+
+You saved **`r round(t1 - t2, 4)`** sec(s) of your time! :)
 
 
 
