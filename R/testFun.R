@@ -63,7 +63,7 @@ calculateFibonacci <-  function(nterms) {
     stop("Plese enter a positive integer")
   } else {
     if(nterms == 1) {
-      n1
+      res <- n1
     } else {
       while(count < nterms) {
         nth = n1 + n2
