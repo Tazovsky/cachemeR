@@ -49,12 +49,16 @@ After you restart `R` session, run `cache$clear()` or clear environment you can 
 by providing path to `config.yaml`:
 
 ```{r}
+# only path to config.yaml is needed to restore cached objects
+# t1 is for time comparison
+rm(list = ls()[!ls() %in% c("config.file", "t1")])
+
 library(cachemeR)
 
 print(config.file)
 
 # list cached objects:
-list.files(cache.dir)
+list.files(dirname(config.file))
 
 cache <- cachemer$new(path = config.file)
 
@@ -66,6 +70,10 @@ t2 <- Sys.time() - start.t
 t2
 
 
+```
+
+```{r, include=FALSE}
+on.exit(unlink(dirname(config.file), T, T))
 ```
 
 
