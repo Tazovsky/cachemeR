@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## How caching work in `cachemeR` package
+## How caching works in `cachemeR` package
 
 Cached objects are stored in provided location as `.rds`:
 
