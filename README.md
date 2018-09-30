@@ -6,6 +6,10 @@
 
 ## Overview
 
+`cachemeR` is a convenient way of caching objects in R. 
+From the beginning the purpose of this package is to make caching as easy as possible 
+and put as less effort as possible to implement it :)
+
 ## Installation
 
 ## Usage
