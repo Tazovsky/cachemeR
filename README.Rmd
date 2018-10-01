@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 
 ## Overview {#overview}
 
-`cachemeR` is a convenient way of caching objects in R. 
+`cachemeR` is a convenient way of functions in R. 
 From the beginning the purpose of this package is to make caching as easy as possible 
 and to put as less effort as possible to implement it in existsing projects :)
 
@@ -76,12 +76,49 @@ or is list or not, or is declared in parent environment, etc.). But it also **ha
 
 ## Use cases {#usecases}
 
+1. shiny app example
+2. calculate Fibonacci
+3. ?
+
 ## Limitations {#limitations}
 
-- $ in argument
-- res %c-% fun(a = 1, b =2) + 1
-- res %c-% (fun(a = 1, b =2) + 1)
-- doesn't work with piepi `%>%` 
+Generally `cachemeR` is designed to cache R functions only. And it won't work if:
+
+1. Cached function's argument value contains `$` or `[[]]`: 
+
+```{r, eval=FALSE}
+args = list(a = 1, b = 2)
+res %c-% fun(a = args$a, b = args[["b"]])
+```
+
+2. You want to cache something else than function only:
+
+```{r, eval=FALSE}
+
+res %c-% fun(a = 1, b = 2) + 1
+
+# or expression in parenthesis:
+res %c-% (fun(a = 1, b = 2) + 1)
+res %c-% {fun(a = 1, b =2) + 1}
+
+# or simple value/variable:
+arg <- 1
+res %c-% arg
+```
+
+3. You want to use it with `magrittr` pipes, for example with `%>%`:
+
+```{r, eval=FALSE}
+getDF <- function(nm) {
+  switch(nm,
+         iris = iris,
+         mtcars = mtcars)
+}
+
+library(dplyr)
+res %c-% getDF("iris") %>% summary()
+
+```
 
 ## Microbenchmark {#microbenchmark}
 
