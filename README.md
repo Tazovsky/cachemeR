@@ -56,11 +56,11 @@ config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
 
 cache$setLogger(TRUE)
-> INFO [2018-10-05 23:08:56] Logger is on
+> INFO [2018-10-05 23:19:38] Logger is on
 
 # cache function
 result1 %c-% doLm(5, 5)
-> INFO [2018-10-05 23:08:56] Caching 'doLm' for first time...
+> INFO [2018-10-05 23:19:38] Caching 'doLm' for first time...
 > [1] "Function is run"
 result1
 > 
@@ -76,7 +76,7 @@ result1
 # function is cached now so if you re-run function then 
 # output will be retrieved from cache instead of executing 'doLm' function again
 result2 %c-% doLm(5, 5)
-> INFO [2018-10-05 23:08:56] 'doLm' is already cached...
+> INFO [2018-10-05 23:19:38] 'doLm' is already cached...
 result2
 > 
 > Call:
@@ -91,8 +91,41 @@ result2
 
 Operator `%c-%` is sesitive to function name, function body, argument
 (whether argument is named or not, or is list or not, or is declared in
-parent environment, etc.). But it also **has some
-[limitations](#limitations)**.
+parent environment, etc.):
+
+``` r
+library(cachemeR)
+
+dir.create(tmp.dir <- tempfile())
+config.file <- file.path(tmp.dir, "config.yaml")
+cache <- cachemer$new(path = config.file)
+> INFO [2018-10-05 23:19:39] Clearing leftovers in cache
+
+testFun <- function(a, b) {
+  (a+b) ^ (a*b)
+}
+
+cache$setLogger(TRUE)
+> INFO [2018-10-05 23:19:39] Logger is on
+
+result1 %c-% testFun(a = 2, b = 3)
+> INFO [2018-10-05 23:19:39] Caching 'testFun' for first time...
+
+testFun <- function(a, b) {
+  (a+b) / (a*b)
+}
+
+# function name didn't change, but function body did so it will be cached:
+result2 %c-% testFun(a = 2, b = 3)
+> INFO [2018-10-05 23:19:39] Caching 'testFun' for first time...
+
+result1
+> [1] 15625
+result2
+> [1] 0.8333333
+```
+
+But it also **has some [limitations](#limitations)**.
 
 Use cases
 ---------

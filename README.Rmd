@@ -81,7 +81,40 @@ on.exit(unlink(dirname(config.file), T, T))
 ```
 
 Operator `%c-%` is sesitive to function name, function body, argument (whether argument is named or not, 
-or is list or not, or is declared in parent environment, etc.). But it also **has some [limitations](#limitations)**.
+or is list or not, or is declared in parent environment, etc.): 
+
+```{r}
+library(cachemeR)
+
+dir.create(tmp.dir <- tempfile())
+config.file <- file.path(tmp.dir, "config.yaml")
+cache <- cachemer$new(path = config.file)
+
+testFun <- function(a, b) {
+  (a+b) ^ (a*b)
+}
+
+cache$setLogger(TRUE)
+
+result1 %c-% testFun(a = 2, b = 3)
+
+testFun <- function(a, b) {
+  (a+b) / (a*b)
+}
+
+# function name didn't change, but function body did so it will be cached:
+result2 %c-% testFun(a = 2, b = 3)
+
+result1
+result2
+
+```
+
+```{r, include=FALSE}
+on.exit(unlink(dirname(config.file), T, T))
+```
+
+But it also **has some [limitations](#limitations)**.
 
 ## Use cases {#usecases}
 
