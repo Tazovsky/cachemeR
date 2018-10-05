@@ -56,11 +56,11 @@ config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
 
 cache$setLogger(TRUE)
-> INFO [2018-10-05 23:06:22] Logger is on
+> INFO [2018-10-05 23:08:56] Logger is on
 
 # cache function
 result1 %c-% doLm(5, 5)
-> INFO [2018-10-05 23:06:22] Caching 'doLm' for first time...
+> INFO [2018-10-05 23:08:56] Caching 'doLm' for first time...
 > [1] "Function is run"
 result1
 > 
@@ -76,7 +76,7 @@ result1
 # function is cached now so if you re-run function then 
 # output will be retrieved from cache instead of executing 'doLm' function again
 result2 %c-% doLm(5, 5)
-> INFO [2018-10-05 23:06:22] 'doLm' is already cached...
+> INFO [2018-10-05 23:08:56] 'doLm' is already cached...
 result2
 > 
 > Call:
@@ -107,14 +107,14 @@ Limitations
 Generally `cachemeR` is designed to cache R functions only. And it won’t
 work if:
 
-1.  Cached function’s argument value contains `$` or `[[]]`:
+-   Cached function’s argument value contains `$` or `[[]]`:
 
 ``` r
 args = list(a = 1, b = 2)
 res %c-% fun(a = args$a, b = args[["b"]])
 ```
 
-1.  You want to cache something else than function only:
+-   You want to cache something else than function only:
 
 ``` r
 
@@ -129,7 +129,7 @@ arg <- 1
 res %c-% arg
 ```
 
-1.  You want to use it with `magrittr` pipes, for example with `%>%`:
+-   You want to use it with `magrittr` pipes, for example with `%>%`:
 
 ``` r
 getDF <- function(nm) {

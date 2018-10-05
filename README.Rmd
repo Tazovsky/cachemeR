@@ -93,14 +93,14 @@ or is list or not, or is declared in parent environment, etc.). But it also **ha
 
 Generally `cachemeR` is designed to cache R functions only. And it won't work if:
 
-1. Cached function's argument value contains `$` or `[[]]`: 
+- Cached function's argument value contains `$` or `[[]]`: 
 
 ```{r, eval=FALSE}
 args = list(a = 1, b = 2)
 res %c-% fun(a = args$a, b = args[["b"]])
 ```
 
-2. You want to cache something else than function only:
+- You want to cache something else than function only:
 
 ```{r, eval=FALSE}
 
@@ -115,7 +115,7 @@ arg <- 1
 res %c-% arg
 ```
 
-3. You want to use it with `magrittr` pipes, for example with `%>%`:
+- You want to use it with `magrittr` pipes, for example with `%>%`:
 
 ```{r, eval=FALSE}
 getDF <- function(nm) {
