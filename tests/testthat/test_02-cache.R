@@ -361,3 +361,22 @@ testthat::test_that("share method", {
   
   testthat::expect_null(cache2$getShared("iris"))
 })
+
+
+testthat::test_that("all arguments are unnamed", {
+  dir.create(tmp.dir <- tempfile())
+  on.exit(unlink(tmp.dir, TRUE, TRUE))
+  config.file <- file.path(tmp.dir, "config.yaml")
+  cache <- cachemer$new(path = config.file)
+  
+  calcFun <- function(a, b) {
+    (a+b) ^ (a*b)
+  }
+  
+  cache$setLogger(TRUE)
+  
+  res %c-% calcFun(2, 3)
+  
+  testthat::expect_equal(res, 15625)
+  
+})
