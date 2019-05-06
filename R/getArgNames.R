@@ -60,7 +60,7 @@ getArgs <- function(value, eval.calls = TRUE, env = parent.frame()) {
   if (inherits(value, "call")) {
     # TODO: following relates to issue #30, so verify else case:
     # res.default.args <- formals(deparse(value[[1]]))
-    res.default.args <- get(as.character(value[[1]]), envir = env)
+    res.default.args <- formals(get(deparse(value[[1]]), envir = env))
   } else {
     res.default.args <- formals(deparse(substitute(value)[[1]]))
   }
