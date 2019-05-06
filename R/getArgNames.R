@@ -58,11 +58,11 @@ getArgs <- function(value, eval.calls = TRUE, env = parent.frame()) {
   res.custom.args <- assign.evaluated.arg(res.custom.args, qte.list) 
   
   if (inherits(value, "call")) {
-    # TODO: following relates to issue #30, so verify else case:
+    # TODO: following relates to issue #30, so verify "else' case:
     # res.default.args <- formals(deparse(value[[1]]))
     res.default.args <- formals(get(deparse(value[[1]]), envir = env))
   } else {
-    res.default.args <- formals(deparse(substitute(value)[[1]]))
+    res.default.args <- formals(get(deparse(substitute(value)[[1]]), envir = env))
   }
 
   common.args <- intersect(names(res.custom.args), names(res.default.args))
