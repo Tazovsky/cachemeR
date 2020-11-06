@@ -58,3 +58,16 @@ if (FALSE) {
 
   testthat::expect_equal(res, res.cached)
 }
+
+
+#' If x is NULL then returns y, else returns z
+#'
+#' @param lhs left hand side argument
+#' @param rhs right hand side argument
+#'
+#' @return \code{lhs} or \code{rhs}
+#' @export
+#' @rdname pipe_if_null
+`%||%` <- function(lhs, rhs) {
+  if (is.null(lhs)) rhs else lhs
+}

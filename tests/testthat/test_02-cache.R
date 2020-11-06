@@ -361,3 +361,17 @@ testthat::test_that("share method", {
   
   testthat::expect_null(cache2$getShared("iris"))
 })
+
+testthat::test_that("names attribute length is fixed", {
+  dir.create(tmp.dir <- tempfile())
+  config.file <- file.path(tmp.dir, "config.yaml")
+  cache <- cachemer$new(path = config.file)
+  
+  testFun <- function(a, b) {
+    (a+b) ^ (a*b)
+  }
+  
+  cache$setLogger(TRUE)
+  
+  result1 %c-% testFun(2, 3)
+})

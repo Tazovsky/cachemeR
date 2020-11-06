@@ -15,7 +15,7 @@
 #' getArgs(testFun())
 #' }
 getArgs <- function(value, eval.calls = TRUE, env = parent.frame()) {
-
+  
   if (inherits(value, "call"))
     qte <- quote(value)
   else
@@ -38,7 +38,7 @@ getArgs <- function(value, eval.calls = TRUE, env = parent.frame()) {
   })
 
   arg.nm <- setdiff(names(qte.list), c("eval.calls"))
-
+  
   res.custom.args <- lapply(arg.nm, function(arg) qte[[arg]])
   names(res.custom.args) <- arg.nm
 
@@ -57,10 +57,13 @@ getArgs <- function(value, eval.calls = TRUE, env = parent.frame()) {
 
   res.custom.args <- assign.evaluated.arg(res.custom.args, qte.list) 
   
-  if (inherits(value, "call"))
-    res.default.args <- formals(deparse(value[[1]]))
-  else
-    res.default.args <- formals(deparse(substitute(value)[[1]]))
+  if (inherits(value, "call")) {
+    # TODO: following relates to issue #30, so verify "else' case:
+    # res.default.args <- formals(deparse(value[[1]]))
+    res.default.args <- formals(get(deparse(value[[1]]), envir = env))
+  } else {
+    res.default.args <- formals(get(deparse(substitute(value)[[1]]), envir = env))
+  }
 
   common.args <- intersect(names(res.custom.args), names(res.default.args))
 
@@ -99,7 +102,7 @@ getArgs <- function(value, eval.calls = TRUE, env = parent.frame()) {
       }
       res
     }
-
+    
     # if all namees of qte.list are NULL then all argument were provided without naming them
     # and point is just to get names from function's default arguments
     if (is.null(names(qte.list)) && !is.null(names(res))) {
