@@ -189,7 +189,7 @@ calc fibonacci
 Dev environment
 --------------
 
-Package is developed in RStudio run in container
+Package is developed in RStudio run in container:
 
 ```bash
 docker build -t cachemer .
