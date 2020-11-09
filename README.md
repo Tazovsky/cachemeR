@@ -185,3 +185,16 @@ calc fibonacci
 # fib5 <- calculateFibonacci(5)
 # fib5 %c-% calculateFibonacci(5)
 ```
+
+Dev environment
+--------------
+
+Package is developed in RStudio run in container
+
+```bash
+docker build -t cachemer .
+docker run --rm -v $(PWD):/mnt/vol -d -p 8787:8787 -it cachemer:latest
+```
+
+
+
