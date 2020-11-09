@@ -57,11 +57,17 @@ saveCache <-
       promises.env$path <- path
       promises.env$x <- x
       
-      qt <- quote({
-        fresult %<-% {
-          saveRDS(x, file = file.path(path, fname))
-        }
-      })
+      # qt <- quote({
+      #   fresult %<-% {
+      #     saveRDS(x, file = file.path(path, fname))
+      #   }
+      # })
+      
+      promises.env$fresult %<-% {
+        saveRDS(x, file = file.path(path, fname))
+      }
+      
+      # browser()
       
       # future of future variable
       fof <- tryCatch({
