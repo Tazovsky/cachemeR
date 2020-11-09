@@ -168,7 +168,7 @@ cachemer <- R6::R6Class(
       e$logger <- list(name = "cachemer.logger", is.on = FALSE)
       e$save.options <- list(
         prefix = "cachemer",
-        plan = "multiprocess",
+        plan = "multisession",
         env = new.env(),
         force.eval = FALSE
       )

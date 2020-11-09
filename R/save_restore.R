@@ -27,10 +27,10 @@ saveCache <-
            sufix,
            force.eval = FALSE,
            prefix = "cachemer",
-           plan = "multiprocess",
+           plan = "multisession",
            workers = future::availableCores() - 1,
            logger.name = "test.logger",
-           future.plan = "multiprocess") {
+           future.plan = "multisession") {
     
     stopifnot(!missing(x))
     stopifnot(!missing(path))
@@ -79,7 +79,7 @@ saveCache <-
       } else {
         # exists so if not resolved then wait
         fof <- future::futureOf(promises.env$fresult)
-        
+        # browser()
         if (!future::resolved(fof)) {
           flog.debug("Wait until previous process is finished...",
                      name = logger.name)
@@ -124,10 +124,10 @@ restoreCache <-
   function(path,
            sufix = ".*",
            prefix = "cachemer",
-           plan = "multiprocess",
+           plan = "multisession",
            workers = future::availableCores() - 1,
            logger.name = "test.logger",
-           future.plan = "multiprocess") {
+           future.plan = "multisession") {
     
     stopifnot(!missing(path))
     
