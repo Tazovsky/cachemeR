@@ -57,17 +57,9 @@ saveCache <-
       promises.env$path <- path
       promises.env$x <- x
       
-      # qt <- quote({
-      #   fresult %<-% {
-      #     saveRDS(x, file = file.path(path, fname))
-      #   }
-      # })
-      
-      promises.env$fresult %<-% {
+      promises.env$fresult <- future::future({
         saveRDS(x, file = file.path(path, fname))
-      }
-      
-      # browser()
+      })
       
       # future of future variable
       fof <- tryCatch({
@@ -76,16 +68,15 @@ saveCache <-
         flog.debug("'fresult' does not exist", name = logger.name)
         NULL
       })
-      
+
       if (is.null(fof)) {
         # if does not exists then procees and create
         flog.debug("Evaluating promise...", name = logger.name)
-        eval(qt, envir = promises.env)
+        eval(quote_fut, envir = promises.env)
         FALSE
       } else {
         # exists so if not resolved then wait
         fof <- future::futureOf(promises.env$fresult)
-        # browser()
         if (!future::resolved(fof)) {
           flog.debug("Wait until previous process is finished...",
                      name = logger.name)
@@ -94,7 +85,7 @@ saveCache <-
           TRUE
         } else {
           flog.debug("Evaluating promise...", name = logger.name)
-          eval(qt, envir = promises.env)
+          future::value(promises.env$fresult)
           FALSE
         }
       }
