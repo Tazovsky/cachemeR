@@ -37,8 +37,9 @@ library(cachemeR)
 > Loading required package: R6
 > Loading required package: futile.logger
 
-doLm <- function(rows, cols) {
-  print("Function is run")
+doLm <- function(rows, cols, verbose = TRUE) {
+  if (verbose)
+    print("Function is run")
   set.seed(1234)
   X <- matrix(rnorm(rows*cols), rows, cols)
   b <- sample(1:cols, cols)
@@ -56,11 +57,11 @@ config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
 
 cache$setLogger(TRUE)
-> INFO [2020-11-10 20:47:14] Logger is on
+> INFO [2020-11-10 21:35:57] Logger is on
 
 # cache function
 result1 %c-% doLm(5, 5)
-> INFO [2020-11-10 20:47:14] Caching 'doLm' for first time...
+> INFO [2020-11-10 21:35:57] Caching 'doLm' for first time...
 > [1] "Function is run"
 result1
 > 
@@ -74,7 +75,7 @@ result1
 # function is cached now so if you re-run function then 
 # output will be retrieved from cache instead of executing 'doLm' function again
 result2 %c-% doLm(5, 5)
-> INFO [2020-11-10 20:47:19] 'doLm' is already cached...
+> INFO [2020-11-10 21:36:00] 'doLm' is already cached...
 result2
 > 
 > Call:
@@ -95,17 +96,17 @@ library(cachemeR)
 dir.create(tmp.dir <- tempfile())
 config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
-> INFO [2020-11-10 20:47:19] Clearing leftovers in cache
+> INFO [2020-11-10 21:36:00] Clearing leftovers in cache
 
 testFun <- function(a, b) {
   (a+b) ^ (a*b)
 }
 
 cache$setLogger(TRUE)
-> INFO [2020-11-10 20:47:19] Logger is on
+> INFO [2020-11-10 21:36:00] Logger is on
 
 result1 %c-% testFun(a = 2, b = 3)
-> INFO [2020-11-10 20:47:19] Caching 'testFun' for first time...
+> INFO [2020-11-10 21:36:00] Caching 'testFun' for first time...
 
 testFun <- function(a, b) {
   (a+b) / (a*b)
@@ -113,7 +114,7 @@ testFun <- function(a, b) {
 
 # function name didn't change, but function body did so it will be cached:
 result2 %c-% testFun(a = 2, b = 3)
-> INFO [2020-11-10 20:47:24] Caching 'testFun' for first time...
+> INFO [2020-11-10 21:36:03] Caching 'testFun' for first time...
 
 result1
 > [1] 15625
@@ -177,131 +178,27 @@ Microbenchmark
 ``` r
 # microbenchmark
 cache <- cachemer$new(path = config.file)
-> INFO [2020-11-10 20:47:28] Clearing leftovers in cache
+> INFO [2020-11-10 21:36:06] Clearing leftovers in cache
 cache$setLogger(FALSE)
 
 test_no_cache <- function(n) {
-  result_no_cache <- doLm(n, n)
+  result_no_cache <- doLm(n, n, verbose = FALSE)
 }
 
 test_cache <- function(n) {
-  result_no_cache %c-%  doLm(n, n)
+  result_no_cache %c-%  doLm(n, n, verbose = FALSE)
 }
 
 res <- microbenchmark::microbenchmark(
   test_no_cache(400),
   test_cache(400)
 )
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
-> [1] "Function is run"
 
 res
 > Unit: milliseconds
->                expr       min        lq     mean    median        uq        max
->  test_no_cache(400) 46.524587 49.168289 55.71481 52.074472 59.824559   98.21499
->     test_cache(400)  1.799063  2.184755 52.62374  2.437088  2.825046 4998.70218
->  neval
->    100
->    100
+>                expr     min       lq     mean   median       uq       max neval
+>  test_no_cache(400) 30.6803 37.41810 42.37821 40.80040 44.89550  121.6283   100
+>     test_cache(400)  3.7888  4.77265 38.20906  5.69405  6.74255 3216.3726   100
 ```
 
 Dev environment
@@ -310,6 +207,14 @@ Dev environment
 Package is developed in RStudio run in container:
 
 ``` bash
-docker build -t cachemer .
-docker run --rm -v $(PWD):/mnt/vol -d -p 8787:8787 -it cachemer:latest
+docker build -t cachemer:3.6.1 -f Dockerfile-R3.6.1 .
+# or R 4.0.0
+docker build -t cachemer:4.0.0 -f Dockerfile-R4.0.0 .
+
+# run container with RStudio listening on 8789
+
+# R 3.6.1
+docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it cachemer:3.6.1
+# R 4.0.0
+docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it cachemer:4.0.0
 ```
