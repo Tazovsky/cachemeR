@@ -1,10 +1,5 @@
 ---
-title: "cachemeR"
-author: "Kamil Foltyński"
-date:  "`r Sys.Date()`"
-output:
-  md_document:
-    variant: markdown_github
+output: github_document
 ---
 
 # cachemeR
@@ -16,7 +11,8 @@ output:
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = ">"
+  comment = ">",
+  out.width = "100%"
 )
 ```
 
@@ -191,14 +187,15 @@ res
 Package is developed in RStudio run in container:
 
 ```bash
-docker build -t cachemer:3.6.1 -f Dockerfile-R3.6.1 .
+# R 3.6.1
+docker build -f Dockerfile-R3.6.1 -t kfoltynski/cachemer:3.6.1 .
 # or R 4.0.0
-docker build -t cachemer:4.0.0 -f Dockerfile-R4.0.0 .
+docker build -f Dockerfile-R4.0.0 -t kfoltynski/cachemer:4.0.0 .
 
 # run container with RStudio listening on 8789
 
 # R 3.6.1
-docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it cachemer:3.6.1
+docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it kfoltynski/cachemer:3.6.1
 # R 4.0.0
-docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it cachemer:4.0.0
+docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it kfoltynski/cachemer:4.0.0
 ```

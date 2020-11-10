@@ -1,5 +1,5 @@
-cachemeR
-========
+
+# cachemeR
 
 [![Build
 Status](https://travis-ci.org/Tazovsky/cachemeR.svg?branch=devel)](https://travis-ci.org/Tazovsky/cachemeR)
@@ -7,15 +7,13 @@ Status](https://travis-ci.org/Tazovsky/cachemeR.svg?branch=devel)](https://travi
 [![Coverage
 Status](https://coveralls.io/repos/github/Tazovsky/cachemeR/badge.svg?branch=devel)](https://coveralls.io/github/Tazovsky/cachemeR?branch=devel)
 
-Overview
---------
+## Overview
 
 `cachemeR` is a convenient way of functions in R. From the beginning the
 purpose of this package is to make caching as easy as possible and to
 put as less effort as possible to implement it in existsing projects :)
 
-Installation
-------------
+## Installation
 
 ``` r
 if (!require("devtools")) 
@@ -24,8 +22,7 @@ if (!require("devtools"))
 devtools::install_github("Tazovsky/cachemeR@devel")
 ```
 
-Usage - `%c-%` operator
------------------------
+## Usage - `%c-%` operator
 
 Cache has to be initialized. It requires to run `cachemer$new` with path
 to `config.yaml`. Then all you need to cache is to use pipe **`%c-%`**
@@ -57,11 +54,11 @@ config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
 
 cache$setLogger(TRUE)
-> INFO [2020-11-10 21:35:57] Logger is on
+> INFO [2020-11-10 22:28:19] Logger is on
 
 # cache function
 result1 %c-% doLm(5, 5)
-> INFO [2020-11-10 21:35:57] Caching 'doLm' for first time...
+> INFO [2020-11-10 22:28:20] Caching 'doLm' for first time...
 > [1] "Function is run"
 result1
 > 
@@ -75,7 +72,7 @@ result1
 # function is cached now so if you re-run function then 
 # output will be retrieved from cache instead of executing 'doLm' function again
 result2 %c-% doLm(5, 5)
-> INFO [2020-11-10 21:36:00] 'doLm' is already cached...
+> INFO [2020-11-10 22:28:23] 'doLm' is already cached...
 result2
 > 
 > Call:
@@ -96,17 +93,17 @@ library(cachemeR)
 dir.create(tmp.dir <- tempfile())
 config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
-> INFO [2020-11-10 21:36:00] Clearing leftovers in cache
+> INFO [2020-11-10 22:28:23] Clearing leftovers in cache
 
 testFun <- function(a, b) {
   (a+b) ^ (a*b)
 }
 
 cache$setLogger(TRUE)
-> INFO [2020-11-10 21:36:00] Logger is on
+> INFO [2020-11-10 22:28:23] Logger is on
 
 result1 %c-% testFun(a = 2, b = 3)
-> INFO [2020-11-10 21:36:00] Caching 'testFun' for first time...
+> INFO [2020-11-10 22:28:23] Caching 'testFun' for first time...
 
 testFun <- function(a, b) {
   (a+b) / (a*b)
@@ -114,7 +111,7 @@ testFun <- function(a, b) {
 
 # function name didn't change, but function body did so it will be cached:
 result2 %c-% testFun(a = 2, b = 3)
-> INFO [2020-11-10 21:36:03] Caching 'testFun' for first time...
+> INFO [2020-11-10 22:28:26] Caching 'testFun' for first time...
 
 result1
 > [1] 15625
@@ -124,27 +121,29 @@ result2
 
 But it also **has some [limitations](#limitations)**.
 
-Use cases
----------
+## Use cases
 
 1.  shiny app example
 2.  calculate Fibonacci
 3.  ?
 
-Limitations
------------
+## Limitations
 
 Generally `cachemeR` is designed to cache R functions only. And it won’t
 work if:
 
--   Cached function’s argument value contains `$` or `[[]]`:
+  - Cached function’s argument value contains `$` or `[[]]`:
+
+<!-- end list -->
 
 ``` r
 args = list(a = 1, b = 2)
 res %c-% fun(a = args$a, b = args[["b"]])
 ```
 
--   You want to cache something else than function only:
+  - You want to cache something else than function only:
+
+<!-- end list -->
 
 ``` r
 
@@ -159,7 +158,9 @@ arg <- 1
 res %c-% arg
 ```
 
--   You want to use it with `magrittr` pipes, for example with `%>%`:
+  - You want to use it with `magrittr` pipes, for example with `%>%`:
+
+<!-- end list -->
 
 ``` r
 getDF <- function(nm) {
@@ -172,13 +173,12 @@ library(dplyr)
 res %c-% getDF("iris") %>% summary()
 ```
 
-Microbenchmark
---------------
+## Microbenchmark
 
 ``` r
 # microbenchmark
 cache <- cachemer$new(path = config.file)
-> INFO [2020-11-10 21:36:06] Clearing leftovers in cache
+> INFO [2020-11-10 22:28:28] Clearing leftovers in cache
 cache$setLogger(FALSE)
 
 test_no_cache <- function(n) {
@@ -196,25 +196,25 @@ res <- microbenchmark::microbenchmark(
 
 res
 > Unit: milliseconds
->                expr     min       lq     mean   median       uq       max neval
->  test_no_cache(400) 30.6803 37.41810 42.37821 40.80040 44.89550  121.6283   100
->     test_cache(400)  3.7888  4.77265 38.20906  5.69405  6.74255 3216.3726   100
+>                expr     min       lq     mean   median       uq      max neval
+>  test_no_cache(400) 29.5441 37.54285 43.74134 41.18770 46.91365  134.578   100
+>     test_cache(400)  3.3005  4.68840 39.38632  5.90005  7.27190 3327.810   100
 ```
 
-Dev environment
-===============
+# Dev environment
 
 Package is developed in RStudio run in container:
 
 ``` bash
-docker build -t cachemer:3.6.1 -f Dockerfile-R3.6.1 .
+# R 3.6.1
+docker build -f Dockerfile-R3.6.1 -t kfoltynski/cachemer:3.6.1 .
 # or R 4.0.0
-docker build -t cachemer:4.0.0 -f Dockerfile-R4.0.0 .
+docker build -f Dockerfile-R4.0.0 -t kfoltynski/cachemer:4.0.0 .
 
 # run container with RStudio listening on 8789
 
 # R 3.6.1
-docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it cachemer:3.6.1
+docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it kfoltynski/cachemer:3.6.1
 # R 4.0.0
-docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it cachemer:4.0.0
+docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it kfoltynski/cachemer:4.0.0
 ```
