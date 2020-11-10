@@ -4,10 +4,18 @@
 \alias{saveCache}
 \title{saveCache}
 \usage{
-saveCache(x, path, promises.env, sufix, force.eval = FALSE,
-  prefix = "cachemer", plan = "multiprocess",
-  workers = future::availableCores() - 1, logger.name = "test.logger",
-  future.plan = "multiprocess")
+saveCache(
+  x,
+  path,
+  promises.env,
+  sufix,
+  force.eval = FALSE,
+  prefix = "cachemer",
+  plan = "multisession",
+  workers = future::availableCores() - 1,
+  logger.name = "test.logger",
+  future.plan = "multisession"
+)
 }
 \arguments{
 \item{x}{}

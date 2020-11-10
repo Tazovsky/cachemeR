@@ -25,6 +25,7 @@ Suggests:
   testthat,
   knitr,
   covr,
-  rmarkdown
-RoxygenNote: 6.1.0
+  rmarkdown,
+  microbenchmark
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr

@@ -45,8 +45,9 @@ In following example function `doLm` fits linear model:
 ```{r}
 library(cachemeR)
 
-doLm <- function(rows, cols) {
-  print("Function is run")
+doLm <- function(rows, cols, verbose = TRUE) {
+  if (verbose)
+    print("Function is run")
   set.seed(1234)
   X <- matrix(rnorm(rows*cols), rows, cols)
   b <- sample(1:cols, cols)
@@ -164,12 +165,40 @@ res %c-% getDF("iris") %>% summary()
 
 ## Microbenchmark {#microbenchmark}
 
-calc fibonacci
-
 ```{r}
+# microbenchmark
+cache <- cachemer$new(path = config.file)
+cache$setLogger(FALSE)
 
-# fib5 <- calculateFibonacci(5)
-# fib5 %c-% calculateFibonacci(5)
+test_no_cache <- function(n) {
+  result_no_cache <- doLm(n, n, verbose = FALSE)
+}
+
+test_cache <- function(n) {
+  result_no_cache %c-%  doLm(n, n, verbose = FALSE)
+}
+
+res <- microbenchmark::microbenchmark(
+  test_no_cache(400),
+  test_cache(400)
+)
+
+res
 
 ```
+# Dev environment
 
+Package is developed in RStudio run in container:
+
+```bash
+docker build -t cachemer:3.6.1 -f Dockerfile-R3.6.1 .
+# or R 4.0.0
+docker build -t cachemer:4.0.0 -f Dockerfile-R4.0.0 .
+
+# run container with RStudio listening on 8789
+
+# R 3.6.1
+docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it cachemer:3.6.1
+# R 4.0.0
+docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it cachemer:4.0.0
+```
