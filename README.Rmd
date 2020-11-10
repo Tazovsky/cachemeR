@@ -164,12 +164,32 @@ res %c-% getDF("iris") %>% summary()
 
 ## Microbenchmark {#microbenchmark}
 
-calc fibonacci
-
 ```{r}
+# microbenchmark
+cache <- cachemer$new(path = config.file)
+cache$setLogger(FALSE)
 
-# fib5 <- calculateFibonacci(5)
-# fib5 %c-% calculateFibonacci(5)
+test_no_cache <- function(n) {
+  result_no_cache <- doLm(n, n)
+}
+
+test_cache <- function(n) {
+  result_no_cache %c-%  doLm(n, n)
+}
+
+res <- microbenchmark::microbenchmark(
+  test_no_cache(400),
+  test_cache(400)
+)
+
+res
 
 ```
+# Dev environment
 
+Package is developed in RStudio run in container:
+
+```bash
+docker build -t cachemer .
+docker run --rm -v $(PWD):/mnt/vol -d -p 8787:8787 -it cachemer:latest
+```

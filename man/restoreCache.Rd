@@ -5,9 +5,15 @@
 \alias{getPattern}
 \title{restoreCache}
 \usage{
-restoreCache(path, sufix = ".*", prefix = "cachemer",
-  plan = "multiprocess", workers = future::availableCores() - 1,
-  logger.name = "test.logger", future.plan = "multiprocess")
+restoreCache(
+  path,
+  sufix = ".*",
+  prefix = "cachemer",
+  plan = "multisession",
+  workers = future::availableCores() - 1,
+  logger.name = "test.logger",
+  future.plan = "multisession"
+)
 
 getPattern(prefix, sufix = ".*")
 }
@@ -25,10 +31,6 @@ getPattern(prefix, sufix = ".*")
 \item{logger.name}{}
 
 \item{future.plan}{}
-
-\item{prefix}{}
-
-\item{sufix}{}
 }
 \value{
 list
