@@ -3,7 +3,9 @@
 \name{cachemer}
 \alias{cachemer}
 \title{cachemer}
-\format{\code{\link{R6Class}} object.}
+\format{
+\code{\link{R6Class}} object.
+}
 \value{
 Object of \code{\link{R6Class}} with methods for caching objects
 }
@@ -63,6 +65,7 @@ TODO
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{cachemer$new(path, overwrite = TRUE)}\if{html}{\out{</div>}}
@@ -71,6 +74,7 @@ TODO
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-summary"></a>}}
+\if{latex}{\out{\hypertarget{method-summary}{}}}
 \subsection{Method \code{summary()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{cachemer$summary(output.class = "tbl")}\if{html}{\out{</div>}}
@@ -79,6 +83,7 @@ TODO
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clear"></a>}}
+\if{latex}{\out{\hypertarget{method-clear}{}}}
 \subsection{Method \code{clear()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{cachemer$clear(all = FALSE)}\if{html}{\out{</div>}}
@@ -87,6 +92,7 @@ TODO
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-cacheme"></a>}}
+\if{latex}{\out{\hypertarget{method-cacheme}{}}}
 \subsection{Method \code{cacheme()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{cachemer$cacheme(
@@ -102,6 +108,7 @@ TODO
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

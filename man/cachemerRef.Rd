@@ -3,7 +3,9 @@
 \name{cachemerRef}
 \alias{cachemerRef}
 \title{cachemerRef}
-\format{\code{\link{R6Class}} object.}
+\format{
+\code{\link{R6Class}} object.
+}
 \value{
 Object of \code{\link{R6Class}} with methods for caching objects
 }
@@ -32,6 +34,7 @@ Inherits from \code{\link{cachemer}}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
