@@ -9,7 +9,7 @@ Status](https://coveralls.io/repos/github/Tazovsky/cachemeR/badge.svg?branch=dev
 
 ## Overview
 
-`cachemeR` is a convenient way of functions in R. From the beginning the
+`cachemeR` is a convenient way of caching functions in R. From the beginning the
 purpose of this package is to make caching as easy as possible and to
 put as less effort as possible to implement it in existsing projects :)
 
