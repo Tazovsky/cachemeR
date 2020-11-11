@@ -192,10 +192,10 @@ docker build -f Dockerfile-R3.6.1 -t kfoltynski/cachemer:3.6.1 .
 # or R 4.0.0
 docker build -f Dockerfile-R4.0.0 -t kfoltynski/cachemer:4.0.0 .
 
-# run container with RStudio listening on 8789
+# run container with RStudio listening on 8790
 
 # R 3.6.1
-docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it kfoltynski/cachemer:3.6.1
+docker run -d --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -p 8790:8787 kfoltynski/cachemer:3.6.1
 # R 4.0.0
-docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it kfoltynski/cachemer:4.0.0
+docker run -d --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -p 8790:8787 kfoltynski/cachemer:4.0.0
 ```

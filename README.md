@@ -54,11 +54,11 @@ config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
 
 cache$setLogger(TRUE)
-> INFO [2020-11-10 22:28:19] Logger is on
+> INFO [2020-11-11 09:33:43] Logger is on
 
 # cache function
 result1 %c-% doLm(5, 5)
-> INFO [2020-11-10 22:28:20] Caching 'doLm' for first time...
+> INFO [2020-11-11 09:33:43] Caching 'doLm' for first time...
 > [1] "Function is run"
 result1
 > 
@@ -72,7 +72,7 @@ result1
 # function is cached now so if you re-run function then 
 # output will be retrieved from cache instead of executing 'doLm' function again
 result2 %c-% doLm(5, 5)
-> INFO [2020-11-10 22:28:23] 'doLm' is already cached...
+> INFO [2020-11-11 09:33:46] 'doLm' is already cached...
 result2
 > 
 > Call:
@@ -93,17 +93,17 @@ library(cachemeR)
 dir.create(tmp.dir <- tempfile())
 config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
-> INFO [2020-11-10 22:28:23] Clearing leftovers in cache
+> INFO [2020-11-11 09:33:46] Clearing leftovers in cache
 
 testFun <- function(a, b) {
   (a+b) ^ (a*b)
 }
 
 cache$setLogger(TRUE)
-> INFO [2020-11-10 22:28:23] Logger is on
+> INFO [2020-11-11 09:33:46] Logger is on
 
 result1 %c-% testFun(a = 2, b = 3)
-> INFO [2020-11-10 22:28:23] Caching 'testFun' for first time...
+> INFO [2020-11-11 09:33:46] Caching 'testFun' for first time...
 
 testFun <- function(a, b) {
   (a+b) / (a*b)
@@ -111,7 +111,7 @@ testFun <- function(a, b) {
 
 # function name didn't change, but function body did so it will be cached:
 result2 %c-% testFun(a = 2, b = 3)
-> INFO [2020-11-10 22:28:26] Caching 'testFun' for first time...
+> INFO [2020-11-11 09:33:49] Caching 'testFun' for first time...
 
 result1
 > [1] 15625
@@ -178,7 +178,7 @@ res %c-% getDF("iris") %>% summary()
 ``` r
 # microbenchmark
 cache <- cachemer$new(path = config.file)
-> INFO [2020-11-10 22:28:28] Clearing leftovers in cache
+> INFO [2020-11-11 09:33:51] Clearing leftovers in cache
 cache$setLogger(FALSE)
 
 test_no_cache <- function(n) {
@@ -196,9 +196,12 @@ res <- microbenchmark::microbenchmark(
 
 res
 > Unit: milliseconds
->                expr     min       lq     mean   median       uq      max neval
->  test_no_cache(400) 29.5441 37.54285 43.74134 41.18770 46.91365  134.578   100
->     test_cache(400)  3.3005  4.68840 39.38632  5.90005  7.27190 3327.810   100
+>                expr       min        lq     mean    median        uq      max
+>  test_no_cache(400) 27.776780 33.109120 38.91465 36.367717 43.045770  136.955
+>     test_cache(400)  3.517288  4.591698 34.48576  5.417589  6.662688 2871.596
+>  neval
+>    100
+>    100
 ```
 
 # Dev environment
@@ -211,10 +214,10 @@ docker build -f Dockerfile-R3.6.1 -t kfoltynski/cachemer:3.6.1 .
 # or R 4.0.0
 docker build -f Dockerfile-R4.0.0 -t kfoltynski/cachemer:4.0.0 .
 
-# run container with RStudio listening on 8789
+# run container with RStudio listening on 8790
 
 # R 3.6.1
-docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it kfoltynski/cachemer:3.6.1
+docker run -d --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -p 8790:8787 kfoltynski/cachemer:3.6.1
 # R 4.0.0
-docker run --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -d -p 8789:8787 -it kfoltynski/cachemer:4.0.0
+docker run -d --name cachemer --rm -v $(PWD):/mnt/vol -w /mnt/vol -p 8790:8787 kfoltynski/cachemer:4.0.0
 ```
