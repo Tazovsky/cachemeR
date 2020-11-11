@@ -111,6 +111,47 @@ result2
 on.exit(unlink(dirname(config.file), T, T))
 ```
 
+## Share elements across all instances of a class
+
+```{r}
+library(cachemeR)
+
+dir.create(tmp.dir <- tempfile())
+config.file <- file.path(tmp.dir, "config.yaml")
+on.exit(unlink(tmp.dir, TRUE, TRUE), add = TRUE)
+cache <- cachemer$new(path = config.file)
+
+cache$setLogger(TRUE)
+
+lm_fit <- function(rows, cols) {
+  print("Fitting linear model...")
+  set.seed(1234)
+  X <- matrix(rnorm(rows*cols), rows, cols)
+  b <- sample(1:cols, cols)
+  y <- runif(1) + X %*% b + rnorm(rows)
+  model <- lm(y ~ X)
+}
+
+fun3 <- function() {
+  print("> fun3")
+  y %c-% lm_fit(123, 123)
+  return(y)
+}
+fun2 <- function() {
+  print("> fun2")
+  fun3()
+}
+fun1 <- function() {
+  print("> fun1")
+  fun2()
+}
+
+x %c-% lm_fit(123, 123) # cache function on the toppest level
+x2 %c-% fun1()
+identical(x, x2)
+
+```
+
 But it also **has some [limitations](#limitations)**.
 
 ## Use cases {#usecases}
