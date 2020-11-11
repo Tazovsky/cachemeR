@@ -2,7 +2,6 @@ language: r
 cache: packages
 latex: false
 r_build_args: '--no-build-vignettes'
-dist: trusty
 services:
   - docker
 
