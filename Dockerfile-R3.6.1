@@ -4,11 +4,10 @@ RUN sudo apt-get update && apt-get install -y libxml2 pandoc libcairo2-dev libxm
 
 ARG RPKG=/tmp/pkg
 
-ADD . ${RPKG}
+ADD src ${RPKG}
 
-RUN R -e "install.packages('devtools')" 
+RUN R -e "install.packages('desc')" 
 
-
-RUN R -e "devtools::install_dev_deps('${RPKG}')" \
+RUN R -e "desc::desc_get_deps('${RPKG}/DESCRIPTION')[['package']]" \
     && R CMD INSTALL ${RPKG} \
     && rm -rf /tmp/*
