@@ -24,6 +24,7 @@ env:
 
 before_install:
   - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+  - sudo apt-get update && apt-get install -y libxml2 pandoc libcairo2-dev libxml2-dev libmagick++-dev
   - docker pull ${CACHE_IMG}
   - docker build --cache-from ${CACHE_IMG} -t ${TEST_IMG} -f ${DOCKERFILE} .
   - cd src
