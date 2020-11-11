@@ -72,7 +72,7 @@ saveCache <-
       if (is.null(fof)) {
         # if does not exists then procees and create
         flog.debug("Evaluating promise...", name = logger.name)
-        eval(quote_fut, envir = promises.env)
+        future::value(promises.env$fresult)
         FALSE
       } else {
         # exists so if not resolved then wait
