@@ -8,6 +8,6 @@ ADD src ${RPKG}
 
 RUN R -e "install.packages('desc')" 
 
-RUN R -e "desc::desc_get_deps('${RPKG}/DESCRIPTION')[['package']]" \
+RUN R -e "install.packages(desc::desc_get_deps('${RPKG}/DESCRIPTION')[['package']])" \
     && R CMD INSTALL ${RPKG} \
     && rm -rf /tmp/*
