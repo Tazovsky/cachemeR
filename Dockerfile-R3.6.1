@@ -8,6 +8,7 @@ ADD . ${RPKG}
 
 RUN R -e "install.packages('devtools')" 
 
+
 RUN R -e "devtools::install_dev_deps('${RPKG}')" \
     && R CMD INSTALL ${RPKG} \
     && rm -rf /tmp/*
