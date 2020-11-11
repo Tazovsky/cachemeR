@@ -1,19 +1,43 @@
 language: r
-
+cache: packages
+latex: false
+r_build_args: '--no-build-vignettes'
+dist: trusty
 services:
   - docker
 
+warnings_are_errors: false
+
+jobs:
+  include:
+    - r: 3.6.1
+    - r: 4.0.0
+    - r: release
+    - r: devel
+
 env:
   global:
-    - CACHE_IMG=kfoltynski/cachemer:3.6.1
-    - TEST_IMG=cachemer:3.6.1
-    - DOCKERFILE=Dockerfile-R3.6.1
+  - _R_CHECK_FORCE_SUGGESTS_=false
+  - CACHE_IMG=kfoltynski/cachemer:3.6.1
+  - TEST_IMG=cachemer:3.6.1
+  - DOCKERFILE=Dockerfile-R3.6.1
 
 before_install:
-- docker pull ${CACHE_IMG}
-- docker build --cache-from ${CACHE_IMG} -t ${TEST_IMG} -f ${DOCKERFILE} .
-- ls -la
-- docker run -it -e PASSWORD=test -v $(pwd):/mnt/vol -w /mnt/vol ${TEST_IMG} R CMD check src --no-manual
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+  - docker pull ${CACHE_IMG}
+  - docker build --cache-from ${CACHE_IMG} -t ${TEST_IMG} -f ${DOCKERFILE} .
+  - cd src
+  - ls -la
+  - docker run -it -e PASSWORD=test -v $(pwd):/mnt/vol -w /mnt/vol ${TEST_IMG} R CMD check . --no-manual
 
-script:
-- true
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'Sys.setenv(TRAVIS = TRUE); covr::codecov()'
+  - Rscript -e 'Sys.setenv(TRAVIS = TRUE); covr::coveralls()'
+  
+notifications:
+  email:
+    on_success: never
+    on_failure: always
