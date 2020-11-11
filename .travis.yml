@@ -12,7 +12,7 @@ env:
 before_install:
 - docker pull ${CACHE_IMG}
 - docker build --cache-from ${CACHE_IMG} -t ${TEST_IMG} -f ${DOCKERFILE} .
-- docker run -d -e PASSWORD=test -v $(PWD):/mnt/vol -w /mnt/vol ${TEST_IMG} /bin/sh -c "R CMD check ."
+- docker run -d -e PASSWORD=test -v $(PWD):/mnt/vol -w /mnt/vol ${TEST_IMG} /bin/sh -c "R CMD check src"
 
 script:
-- R CMD check .
+- R CMD check src
