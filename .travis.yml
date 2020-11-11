@@ -13,7 +13,7 @@ before_install:
 - docker pull ${CACHE_IMG}
 - docker build --cache-from ${CACHE_IMG} -t ${TEST_IMG} -f ${DOCKERFILE} .
 - ls -la
-- docker run -d -e PASSWORD=test -v $(pwd):/mnt/vol -w /mnt/vol ${TEST_IMG} /bin/sh -c "R CMD check src --no-manual"
+- docker run -it -e PASSWORD=test -v $(pwd):/mnt/vol -w /mnt/vol ${TEST_IMG} /bin/sh -c "R CMD check src --no-manual"
 
 script:
-- R CMD check src --no-manual
+- true

@@ -9,9 +9,10 @@ Status](https://coveralls.io/repos/github/Tazovsky/cachemeR/badge.svg?branch=dev
 
 ## Overview
 
-`cachemeR` is a convenient way of caching functions in R. From the beginning the
-purpose of this package is to make caching as easy as possible and to
-put as less effort as possible to implement it in existsing projects :)
+`cachemeR` is a convenient way of caching functions in R. From the
+beginning the purpose of this package is to make caching as easy as
+possible and to put as less effort as possible to implement it in
+existsing projects :)
 
 ## Installation
 
@@ -19,7 +20,7 @@ put as less effort as possible to implement it in existsing projects :)
 if (!require("devtools")) 
   install.packages("devtools")
 
-devtools::install_github("Tazovsky/cachemeR@devel")
+# devtools::install_github("Tazovsky/cachemeR@devel")
 ```
 
 ## Usage - `%c-%` operator
@@ -54,11 +55,11 @@ config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
 
 cache$setLogger(TRUE)
-> INFO [2020-11-11 09:33:43] Logger is on
+> INFO [2020-11-11 15:30:10] Logger is on
 
 # cache function
 result1 %c-% doLm(5, 5)
-> INFO [2020-11-11 09:33:43] Caching 'doLm' for first time...
+> INFO [2020-11-11 15:30:10] Caching 'doLm' for first time...
 > [1] "Function is run"
 result1
 > 
@@ -72,7 +73,7 @@ result1
 # function is cached now so if you re-run function then 
 # output will be retrieved from cache instead of executing 'doLm' function again
 result2 %c-% doLm(5, 5)
-> INFO [2020-11-11 09:33:46] 'doLm' is already cached...
+> INFO [2020-11-11 15:30:13] 'doLm' is already cached...
 result2
 > 
 > Call:
@@ -93,17 +94,17 @@ library(cachemeR)
 dir.create(tmp.dir <- tempfile())
 config.file <- file.path(tmp.dir, "config.yaml")
 cache <- cachemer$new(path = config.file)
-> INFO [2020-11-11 09:33:46] Clearing leftovers in cache
+> INFO [2020-11-11 15:30:13] Clearing leftovers in cache
 
 testFun <- function(a, b) {
   (a+b) ^ (a*b)
 }
 
 cache$setLogger(TRUE)
-> INFO [2020-11-11 09:33:46] Logger is on
+> INFO [2020-11-11 15:30:13] Logger is on
 
 result1 %c-% testFun(a = 2, b = 3)
-> INFO [2020-11-11 09:33:46] Caching 'testFun' for first time...
+> INFO [2020-11-11 15:30:13] Caching 'testFun' for first time...
 
 testFun <- function(a, b) {
   (a+b) / (a*b)
@@ -111,7 +112,7 @@ testFun <- function(a, b) {
 
 # function name didn't change, but function body did so it will be cached:
 result2 %c-% testFun(a = 2, b = 3)
-> INFO [2020-11-11 09:33:49] Caching 'testFun' for first time...
+> INFO [2020-11-11 15:30:16] Caching 'testFun' for first time...
 
 result1
 > [1] 15625
@@ -178,7 +179,7 @@ res %c-% getDF("iris") %>% summary()
 ``` r
 # microbenchmark
 cache <- cachemer$new(path = config.file)
-> INFO [2020-11-11 09:33:51] Clearing leftovers in cache
+> INFO [2020-11-11 15:30:19] Clearing leftovers in cache
 cache$setLogger(FALSE)
 
 test_no_cache <- function(n) {
@@ -189,16 +190,31 @@ test_cache <- function(n) {
   result_no_cache %c-%  doLm(n, n, verbose = FALSE)
 }
 
-res <- microbenchmark::microbenchmark(
+res1 <- microbenchmark::microbenchmark(
   test_no_cache(400),
   test_cache(400)
 )
 
-res
+res1
 > Unit: milliseconds
->                expr       min        lq     mean    median        uq      max
->  test_no_cache(400) 27.776780 33.109120 38.91465 36.367717 43.045770  136.955
->     test_cache(400)  3.517288  4.591698 34.48576  5.417589  6.662688 2871.596
+>                expr       min        lq     mean    median        uq       max
+>  test_no_cache(400) 27.791385 36.342737 48.41251 42.878064 53.523878  170.9112
+>     test_cache(400)  3.918195  4.821051 37.23247  6.200957  8.450249 2918.3756
+>  neval
+>    100
+>    100
+
+# but now just try it assuming the calculation has been already cached
+res2 <- microbenchmark::microbenchmark(
+  test_no_cache(400),
+  test_cache(400)
+)
+
+res2
+> Unit: milliseconds
+>                expr       min        lq      mean    median        uq      max
+>  test_no_cache(400) 32.700354 39.740025 52.795767 44.581218 53.840434 180.3494
+>     test_cache(400)  3.350138  5.764391  8.469188  6.987449  9.146869  32.0906
 >  neval
 >    100
 >    100

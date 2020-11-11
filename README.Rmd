@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 ## Overview {#overview}
 
-`cachemeR` is a convenient way of functions in R. 
+`cachemeR` is a convenient way of caching functions in R. 
 From the beginning the purpose of this package is to make caching as easy as possible 
 and to put as less effort as possible to implement it in existsing projects :)
 
@@ -29,7 +29,7 @@ and to put as less effort as possible to implement it in existsing projects :)
 if (!require("devtools")) 
   install.packages("devtools")
 
-devtools::install_github("Tazovsky/cachemeR@devel")
+# devtools::install_github("Tazovsky/cachemeR@devel")
 ```
 
 ## Usage - `%c-%` operator {#usage}
@@ -174,13 +174,20 @@ test_cache <- function(n) {
   result_no_cache %c-%  doLm(n, n, verbose = FALSE)
 }
 
-res <- microbenchmark::microbenchmark(
+res1 <- microbenchmark::microbenchmark(
   test_no_cache(400),
   test_cache(400)
 )
 
-res
+res1
 
+# but now just try it assuming the calculation has been already cached
+res2 <- microbenchmark::microbenchmark(
+  test_no_cache(400),
+  test_cache(400)
+)
+
+res2
 ```
 # Dev environment
 
