@@ -2,12 +2,12 @@ FROM rocker/rstudio:3.6.1
 
 RUN sudo apt-get update && apt-get install -y libxml2 pandoc libcairo2-dev libxml2-dev libmagick++-dev
 
+# speedup build by installing dependencies first (they do not change as often as R pkg)
+ARG DESC=/tmp/DESCRIPTION
+ADD src/DESCRIPTION ${DESC}
+RUN R -e "install.packages('desc'); install.packages(desc::desc_get_deps('${DESC}')[['package']])"
+
 ARG RPKG=/tmp/pkg
-
-ADD . ${RPKG}
-
-RUN R -e "install.packages('devtools')" 
-
-RUN R -e "devtools::install_dev_deps('${RPKG}')" \
-    && R CMD INSTALL ${RPKG} \
+ADD src ${RPKG}
+RUN R CMD INSTALL ${RPKG} \
     && rm -rf /tmp/*
