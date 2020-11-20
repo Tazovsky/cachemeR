@@ -20,7 +20,7 @@ existsing projects :)
 if (!require("devtools")) 
   install.packages("devtools")
 
-# devtools::install_github("Tazovsky/cachemeR@devel")
+devtools::install_github("Tazovsky/cachemeR@devel")
 ```
 
 ## Usage - `%c-%` operator
