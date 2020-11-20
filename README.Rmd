@@ -29,7 +29,7 @@ and to put as less effort as possible to implement it in existsing projects :)
 if (!require("devtools")) 
   install.packages("devtools")
 
-# devtools::install_github("Tazovsky/cachemeR@devel")
+devtools::install_github("Tazovsky/cachemeR@devel")
 ```
 
 ## Usage - `%c-%` operator {#usage}
